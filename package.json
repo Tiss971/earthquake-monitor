@@ -1,28 +1,26 @@
 {
-  "name": "test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "engines": {
-    "node": ">=14.17",
-    "npm": "8.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "start-watch": "nodemon index.js",
-    "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.0.0",
-    "express": "^4.17.3",
-    "mongoose": "^6.2.6"
-  },
-  "devDependencies": {
-    "concurrently": "^7.0.0",
-    "nodemon": "^2.0.15"
-  }
+    "name": "earthquake-monitor",
+    "version": "1.0.0",
+    "description": "See the most recent earthquakes around the world.",
+    "scripts": {
+        "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run start\" ",
+        "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Tiss971/earthquake-monitor.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Tiss971/earthquake-monitor/issues"
+    },
+    "homepage": "https://github.com/Tiss971/earthquake-monitor#readme",
+    "devDependencies": {
+        "concurrently": "^7.1.0",
+        "prettier": "2.6.2"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.0"
+    }
 }
