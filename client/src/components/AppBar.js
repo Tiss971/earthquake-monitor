@@ -31,8 +31,8 @@ const ResponsiveAppBar = (props) => {
         {name: "Latest", path: '/'},
         {name: "Informations", path: '/infos'},
         {name: "Stats", path: '/stats'},
-        {name: "Chat", path: '/chat'},
-        {name: "Admin", path: '/admin', admin:'true'}
+        {name: "Chat", path: '/chat',logged:true},
+        {name: "Admin", path: '/admin', admin:true}
     ]
     const settings = [
         {name : "Location"}, 
@@ -127,8 +127,9 @@ const ResponsiveAppBar = (props) => {
                                 display: { xs: "block", md: "none" },
                             }}
                         >
-                            {pages.map((page) => (
+                            {pages.filter(page => (!page.logged || user) && (!page.admin || user?.admin)).map((page) => (
                                 <NavLink 
+                                    key={page.name}  
                                     to={page.path} 
                                     onClick={handleCloseNavMenu}
                                     style={({ isActive }) =>
@@ -165,8 +166,9 @@ const ResponsiveAppBar = (props) => {
 
                     {/* Link list if big */}
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                        {pages.map((page) => (
+                        {pages.filter(page => (!page.logged || user) && (!page.admin || user?.admin)).map((page) => (
                             <NavLink
+                                key={page.path}
                                 to={page.path}
                                 style={({ isActive }) =>
                                     isActive ? activeStyle : inactiveStyle

@@ -1,17 +1,16 @@
 import { io } from "socket.io-client"
-
 let socket
 let apiURL = process.env.REACT_APP_API_ENDPOINT
-export const initSocket = (token) => {
+
+export const initSocket = (user) => {
     socket = io(apiURL, {
         auth: {
-            token,
+            user
         },
     })
 }
 
 export const disconnectSocket = () => {
-    console.log("Disconnecting socket...")
     if (socket) socket.disconnect()
 }
 
@@ -29,11 +28,26 @@ export const subscribeToMessages = (cb) => {
     })
 }
 
-export const sendMessage = ({ message, roomName }, cb) => {
-    let username = JSON.parse(localStorage.getItem("user")).nickname
-    if (socket) socket.emit("chat:send", { username, message, roomName }, cb)
+export const sendMessage = ({ message }, cb) => {
+    if (socket) socket.emit("chat:send", message, cb)
 }
 
 export const joinRoom = (roomName, cb) => {
     if (socket) socket.emit("join", roomName, cb)
+}
+
+export const leaveRoom = (roomName, cb) => {
+    if (socket) socket.emit("leave", roomName, cb)
+}
+
+export const getUsers = (cb) => {
+    if (!socket) return true
+    socket.on("users", (users) => {
+        var userList = users.filter((user) => user.userID !== socket.auth.user._id)
+        userList = userList.users = users.sort((a, b) => {
+          if (a.username < b.username) return -1;
+          return a.username > b.username ? 1 : 0;
+        });
+        return cb(null, userList)
+      });
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 
@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography"
 import AuthService from "services/auth"
 
 import "../css/form.css"
+import { WindowSharp } from "@mui/icons-material"
 
 function Login() {
     const [DBerror, setDBerror] = useState("")
@@ -30,12 +31,6 @@ function Login() {
     })
 
     let navigate = useNavigate()
-    useEffect(() => {
-        if (localStorage.getItem("user")) {
-            setLogged(true)
-            navigate("/")
-        }
-    }, [navigate])
     /* GOOGLE LOGIN */
     const google = () => {
         //let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
@@ -51,15 +46,14 @@ function Login() {
                 if (res.data.ok) {
                     setLogged(true)
                     setTimeout(() => {
-                        navigate("/")
+                        window.open("/", "_self");
                     }, 2000)
                 } else {
                     setDBerror(res.data.message)
                 }
             })
             .catch((err) => {
-                console.log(err)
-                setDBerror(err.response.data.msg)
+                setDBerror(err.response.data.message)
             })
     }
 

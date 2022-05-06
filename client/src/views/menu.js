@@ -41,6 +41,12 @@ export default function Menu() {
         }
     )}
 
+    function currentUser(e) {
+        e.preventDefault()
+        AuthService.currentUser().then((response) => {
+            console.log(response.data)
+        })
+    }
     function Swagger(e) {
         e.preventDefault()
         window.open(
@@ -55,6 +61,7 @@ export default function Menu() {
             <Button variant="contained" onClick={handlePublic}>Public</Button>
             <Button variant="contained" onClick={handlePrivateWithAuth}>Private with Auth</Button>
             <Button variant="contained" onClick={handleVerifyJWT}>Check Token</Button>
+            <Button variant="contained" onClick={currentUser}>Current User</Button>
             <Button variant="contained" onClick={Swagger}>API Docs</Button>
 
             {theme.mode}

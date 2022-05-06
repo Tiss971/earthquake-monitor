@@ -7,15 +7,6 @@ import Box from "@mui/material/Box"
 import CssBaseline from "@mui/material/CssBaseline"
 
 import ResponsiveAppBar from "./AppBar"
-const DrawerHeader = styled("div")(({ theme }) => ({
-    display: "flex",
-    alignItems: "center",
-    color: theme.palette.light.main,
-    justifyContent: "space-between",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-}))
 
 const Layout = (props) => {
     const [mode, setMode] = React.useState('dark');
@@ -100,7 +91,7 @@ const Layout = (props) => {
                     <ResponsiveAppBar onSwitchMode={colorMode.toggleColorMode} user={props.user}/>
                     {/* CONTENT */}
                     <Box component="main" sx={{ flexGrow: 1, margin: 1 }}>
-                        <DrawerHeader />
+                       
                         <Outlet />
                     </Box>
                 </Box>
