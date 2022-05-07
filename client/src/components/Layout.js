@@ -50,6 +50,9 @@ const Layout = (props) => {
                             "*::-webkit-scrollbar-thumb": {
                                 boxShadow: "inset 0 0 0 10px",
                             },
+                            "*::-webkit-scrollbar-track": {
+                                backgroundColor: "transparent"
+                            }
                         },
                     },
                 },

@@ -194,7 +194,6 @@ const ResponsiveAppBar = (props) => {
 
                     {/* Dark/Light Mode */}
                     <Box sx={{textTransform:'capitalize', mr:2}}>
-                        {theme.palette.mode} mode
                         <IconButton aria-label="Switch ColorMode" onClick={() => switchColorMode()}>
                             <Icon   
                                 baseClassName="fas" 

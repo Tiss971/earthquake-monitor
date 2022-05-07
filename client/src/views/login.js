@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 
 import Alert from "@mui/material/Alert"
@@ -16,7 +15,6 @@ import Typography from "@mui/material/Typography"
 import AuthService from "services/auth"
 
 import "../css/form.css"
-import { WindowSharp } from "@mui/icons-material"
 
 function Login() {
     const [DBerror, setDBerror] = useState("")
@@ -30,7 +28,6 @@ function Login() {
         mode: "all",
     })
 
-    let navigate = useNavigate()
     /* GOOGLE LOGIN */
     const google = () => {
         //let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,

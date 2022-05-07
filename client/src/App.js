@@ -12,7 +12,7 @@ import Admin from "./views/admin"
 import Messages from "./views/messages"
 import Chat from "./components/chat/chat"
 import Infos from "./views/infos"
-import Menu from "./views/menu"
+import Latest from "./views/latest"
 import Stats from "./views/stats"
 import Login from "./views/login"
 import Register from "./views/register"
@@ -41,7 +41,7 @@ const App = () => {
             <BrowserRouter >
                 <Routes>
                     <Route element={<Layout user={user} />}>
-                        <Route path="/" element={<Menu user={user}/>} />
+                        <Route path="/" element={<Latest user={user}/>} />
                         <Route path="/chat" element={user ? <Messages user={user}/> : <Navigate to="/"/>}>
                             <Route path=":userID" element={<Chat />} /> 
                         </Route>
