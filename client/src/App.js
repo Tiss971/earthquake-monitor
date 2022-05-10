@@ -26,7 +26,6 @@ import {initSocket} from "services/sioService"
 const App = () => {
     const [user,setUser] = useState(null);
     useEffect(() => {
-        console.log("useEffect called") 
         AuthService.isAuthenticated().then(user => {
             if (user) {
                 localStorage.setItem("token", user.token)

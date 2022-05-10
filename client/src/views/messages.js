@@ -1,4 +1,3 @@
-import {useState} from "react"
 import {Outlet} from "react-router-dom"
 import ListUsers from "../components/chat/listUsers"
 import Grid from '@mui/material/Grid'

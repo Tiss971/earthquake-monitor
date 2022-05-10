@@ -93,7 +93,7 @@ const Layout = (props) => {
                     {/* TOP BAR */}
                     <ResponsiveAppBar onSwitchMode={colorMode.toggleColorMode} user={props.user}/>
                     {/* CONTENT */}
-                    <Box component="main" sx={{ flexGrow: 1, margin: 1 }}>
+                    <Box component="main" sx={{ flexGrow: 1, mx: 2, mt:2, overflow:'hidden' }}>
                        
                         <Outlet />
                     </Box>

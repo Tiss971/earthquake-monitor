@@ -19,7 +19,7 @@ import Typography from "@mui/material/Typography"
 import Grid from "@mui/material/Grid"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
-import SendIcon from "@material-ui/icons/Send"
+import Icon from "@mui/material/Icon"
 import userService from "services/userService"
 
 function DateToHoursAndMinutes(datestring) {
@@ -40,11 +40,13 @@ function Chat(props) {
 
     const roomInputRef = useRef("")
 
-    useEffect(async () => {
-        //get user by Id
-        await userService.getUserById(params.userID).then(user => {
-            setUser(user)
-        })
+    useEffect(() => {
+        async function fetchData() {
+            await userService.getUserById(params.userID).then(user => {
+                setUser(user)
+            })
+        }
+        fetchData()
 
         subscribeToMessages((err, data) => {
             setMessages((prev) => [...prev, data])
@@ -169,7 +171,10 @@ function Chat(props) {
                     <Button
                         variant="contained"
                         type="submit"
-                        endIcon={<SendIcon />}
+                        endIcon={ <Icon   
+                            baseClassName="fas" 
+                            className="fa-paper-plane-top"
+                        />}
                     >
                         Submit
                     </Button>
