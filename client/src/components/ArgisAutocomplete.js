@@ -55,7 +55,6 @@ export default function ArgisAutocomplete() {
         }
 
         fetch({ inputValue }, (results) => {
-            console.log("test")
             if (active) {
               let newOptions = [];
       
@@ -79,8 +78,8 @@ export default function ArgisAutocomplete() {
     useEffect(() => {
         async function fetchData() {
             UserService.getUser().then(user => {
-                setShared(user.public)
-                setValue(user.address)
+                if (user?.public) setShared(user.public)
+                if (user?.adress) setValue(user.address)
             });
         }
         fetchData();
@@ -98,6 +97,7 @@ export default function ArgisAutocomplete() {
                     autoComplete
                     noOptionsText="No locations found"
                     includeInputInList
+                    freeSolo
                     filterSelectedOptions
                     filterOptions={(x) => x} 
                     getOptionLabel={(option) =>
@@ -127,7 +127,7 @@ export default function ArgisAutocomplete() {
                         setInputValue(newInputValue);
                     }}
                     isOptionEqualToValue={(option, value) => {
-                        return option.magicKey === value.magicKey;
+                        return option?.magicKey === value?.magicKey;
                     }}
                     renderInput={(params) => 
                         <TextField {...params} />

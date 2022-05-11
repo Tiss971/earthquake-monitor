@@ -32,7 +32,7 @@ const ResponsiveAppBar = (props) => {
 
     const pages = [
         {name: "Latest", path: '/'},
-        {name: "Informations", path: '/infos'},
+        //{name: "Informations", path: '/infos'},
         {name: "Stats", path: '/stats'},
         {name: "Chat", path: '/chat',logged:true},
         {name: "Admin", path: '/admin', admin:true}
@@ -88,8 +88,9 @@ const ResponsiveAppBar = (props) => {
                         variant="h6"
                         noWrap
                         component="div"
-                        sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+                        sx={{ mr: 2, justifyContent:'center', alignItems:'center', display: { xs: "none", md: "flex" } }}
                     >
+                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'}/>
                         Earthquake Monitor
                     </Typography>
 
@@ -152,12 +153,12 @@ const ResponsiveAppBar = (props) => {
                     </Box>
 
                     {/* App Logo if small */}
-                    <Typography sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+                    <Typography sx={{ flexGrow: 1, justifyContent:'center', alignItems:'center', display: { xs: "flex", md: "none" } }}
                         variant="h6"
-                        noWrap
                         component="div"
                     >
-                        {i18next.t("Logo")}
+                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'}/>
+                        Earthquake Monitor
                     </Typography>
 
                     {/* Link list if big */}
