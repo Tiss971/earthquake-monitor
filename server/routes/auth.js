@@ -26,7 +26,6 @@ router.post("/register", (req, res) => {
                 if (err) {
                     console.log("Error : ", err)
                 } else if (user) {
-                    console.log("Email already exists")
                     res.json({
                         ok: false,
                         message: "This email is already registered",
@@ -44,6 +43,7 @@ router.post("/register", (req, res) => {
                             newUser.password = hash
                             newUser.save((err, savedUser) => {
                                 if (err) {
+                                    console.log(err)
                                     res.statusCode = "401"
                                     return res.json(err)
                                 } else {
@@ -60,32 +60,7 @@ router.post("/register", (req, res) => {
         }
     })
 })
-/* Local Login 
-router.post('/login', function(req, res, next ){
-    passport.authenticate('local', function(err, user, message) {
-        if (err) { return next(err) }
-        if (!user) { 
-            return res.status(401).json({
-                ok: false,
-                message: message,
-            })
-        }
-        //else
-        req.logIn(user, function(err) {
-            if (err) { return next(err); }
-            var payload = {
-                id: req.user.id,
-                expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
-            }
-            res.json({
-                ok: true,
-                user: req.user,
-                token: jwt.encode(payload, process.env.TOKEN_SECRET),
-            })
-          });
-       
-    })(req, res, next);
-})*/
+/* local login */
 router.post('/login', function(req, res, next) {
     passport.authenticate('local',function(err,user,message){
         if(err){

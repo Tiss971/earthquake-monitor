@@ -7,8 +7,9 @@ const strategy = new LocalStrategy(
         usernameField: "username" 
     }, 
     function (username, password, done) {
-        User.findOne(
+        User.findOneAndUpdate(
             { $or: [{ email: username }, { username: username }] }, 
+            { lastVisit: Date.now() },
             (err,user) => {
                 if (err) {
                     return done(err)

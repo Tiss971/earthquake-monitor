@@ -19,7 +19,7 @@ const strategy = new GoogleStrategy({
         },
     };
 
-    const userExist = await User.findOne({ email: email }).exec();;
+    const userExist = await User.findOneAndUpdate({ email: email },{lastVisit: Date.now()}).exec();;
     if (!userExist) {
         console.log("User not found, creating new user");
         const newUser = await User.create({
@@ -27,6 +27,7 @@ const strategy = new GoogleStrategy({
             email,
             image,
             third_party_auth,
+            lastVisit: Date.now()
         });
         return done(null, newUser);
     }
