@@ -46,6 +46,12 @@ const UserSchema = new mongoose.Schema(
                 default: null,
             },
         },
+        address: {
+            type: String,
+        },
+        public: {
+            type: Boolean,
+        },
         lastVisit: {
             type: Date,
             default: Date.now,

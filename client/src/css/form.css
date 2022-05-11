@@ -5,13 +5,6 @@
   font-family: montserrat, sans-serif;
 }
 
-input,
-button {
-  appearance: none;
-  background: none;
-  border: none;
-  outline: none;
-}
 
 .App {
   height: 100vh;

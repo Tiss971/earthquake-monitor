@@ -5,6 +5,7 @@ import i18next from "../i18n"
 import { useTheme } from "@mui/material/styles"
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
 import Toolbar from "@mui/material/Toolbar"
 import Icon from "@mui/material/Icon"
 import IconButton from "@mui/material/IconButton"
@@ -18,6 +19,8 @@ import Tooltip from "@mui/material/Tooltip"
 import MenuItem from "@mui/material/MenuItem"
 import FormControl from "@mui/material/FormControl"
 import Select from "@mui/material/Select"
+
+import ArgisAutocomplete from "../components/ArgisAutocomplete"
 
 import AuthService from "../services/auth"
 
@@ -34,14 +37,6 @@ const ResponsiveAppBar = (props) => {
         {name: "Chat", path: '/chat',logged:true},
         {name: "Admin", path: '/admin', admin:true}
     ]
-    const settings = [
-        {name : "Location"}, 
-        {name : "Share"}, 
-        {name : "Parameters"}, 
-        {name : "Logout", fonc : () => {
-            AuthService.logout()
-        }}
-    ]
 
     // Menus
     const handleOpenNavMenu = (event) => {
@@ -56,6 +51,7 @@ const ResponsiveAppBar = (props) => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null)
     }
+
     let navigate = useNavigate();
 
     // Translation I18n
@@ -79,7 +75,7 @@ const ResponsiveAppBar = (props) => {
         textDecoration: "none",
         color: theme.palette.mode === "dark" ? "#fff" : "#000"
     };
-
+   
     return (
         <AppBar
             position="static"
@@ -244,16 +240,46 @@ const ResponsiveAppBar = (props) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem
-                                    key={setting.name}
-                                    onClick={() => {setting.fonc()}}
-                                >
-                                    <Typography textAlign="center">
-                                        {setting.name}
+                            <Box sx={{px:2, maxWidth:'200px'}}>
+                                <Box sx={{display:'flex'}}>
+                                    <Icon   
+                                        baseClassName="fas" 
+                                        className="fa-location-dot"
+                                    />
+                                    <Typography>
+                                        Location :
                                     </Typography>
-                                </MenuItem>
-                            ))}
+                                </Box>
+                                <ArgisAutocomplete/>
+                                <Button fullWidth
+                                    onClick={() => {navigate('/parameters')}} 
+                                    variant="contained"
+                                    color="success"
+                                    startIcon={<Icon
+                                        baseClassName="fas" 
+                                        className="fa-gear"
+                                    />}
+                                >
+                                    <Typography>
+                                        Parameters
+                                    </Typography>
+                                </Button>
+                                <Divider variant='middle' sx={{my:1}}></Divider>
+                                <Button fullWidth
+                                    onClick={() => {
+                                        AuthService.logout();
+                                        handleCloseUserMenu();
+                                    }}
+                                    variant="contained"
+                                    color="error"
+                                    startIcon={<Icon   
+                                        baseClassName="fas" 
+                                        className="fa-arrow-right-to-bracket"
+                                    />}
+                                >
+                                    Logout
+                                </Button>
+                            </Box>
                         </Menu>
                     </Box>
                     {/* Log/Register Button */}

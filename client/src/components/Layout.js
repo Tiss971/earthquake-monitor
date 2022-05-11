@@ -2,7 +2,7 @@ import * as React from "react"
 import { Outlet } from "react-router-dom"
 import { loadCSS } from "fg-loadcss"
 
-import { styled, ThemeProvider, createTheme } from "@mui/material/styles"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
 import Box from "@mui/material/Box"
 import CssBaseline from "@mui/material/CssBaseline"
 

@@ -17,10 +17,18 @@ import Select from '@mui/material/Select';
 import Typography from "@mui/material/Typography"
 
 import EarthquakeService from "../services/earthquakeService"
-
-import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet'
+import { geosearch, arcgisOnlineProvider} from 'esri-leaflet-geocoder';
+import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
+import '../css/App.css';
+import { 
+    MapContainer, 
+    LayersControl,
+    TileLayer, 
+    Marker, 
+    Tooltip,
+    useMap
+} from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
-
 const getFormattedDateTime = (date) => {
     const dateObj = new Date(date)
     return dateObj.toLocaleString("en-US", {
@@ -35,14 +43,53 @@ const getFormattedDateTime = (date) => {
         })
         
 }
+function Control () {
+    const mapInstance = useMap()
+     //Initialize map
+    useEffect(() => {
+        // Fix marker bug
+        const L = require('leaflet');
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+          iconUrl: require("leaflet/dist/images/marker-icon.png"),
+          shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+        });
 
+        if ( !mapInstance ) return;
+        // Set map center
+        mapInstance.locate({setView: true, maxZoom: 10});
+
+        // Set control
+        
+        const control = geosearch({
+                providers: [
+                  arcgisOnlineProvider({
+                    // API Key to be passed to the ArcGIS Online Geocoding Service
+                    apikey: process.env.REACT_APP_ARCGIS_API_KEY,
+                  })
+                ]
+            })
+        control.addTo(mapInstance);
+        control.on('results', handleOnSearchResuts);
+      
+        return () => {
+            control.off('results', handleOnSearchResuts);
+        }
+    }, [mapInstance]);
+    function handleOnSearchResuts(data) {
+        console.log('Search results', data);
+    }
+}
 
 export default function Latest() {
+    
+
     const [open ,setOpen] = useState(false);
     const [loading ,setLoading] = useState(false);
     const [summary,setSummary] = useState(null);
-    const [time, setTime] = useState('week');
-    const [magnitude, setMagnitude] = useState('4.5');
+    const [time, setTime] = useState('day');
+    const [magnitude, setMagnitude] = useState('2.5');
     const [selectedIndex, setSelectedIndex] = useState(1);
 
     const handleTime = (event) => {
@@ -56,7 +103,7 @@ export default function Latest() {
         setOpen(true);
     }
 
-
+    // Fetch latest earthquake
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -72,18 +119,6 @@ export default function Latest() {
            },60000)
         return()=>clearInterval(interval) 
     }, [time,magnitude]);
-
-    useEffect(() => {
-        const L = require("leaflet");
-    
-        delete L.Icon.Default.prototype._getIconUrl;
-    
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-          iconUrl: require("leaflet/dist/images/marker-icon.png"),
-          shadowUrl: require("leaflet/dist/images/marker-shadow.png")
-        });
-      }, []);
 
     return (
         <Grid container sx={{height: 'calc(100vh - 80px)'}} spacing={2}>
@@ -162,12 +197,22 @@ export default function Latest() {
             </Grid>
             {/* Map of earthquakes*/}
             <Grid item xs sx={{height: 'calc(100vh - 64px)'}}>
-                <MapContainer center={[51.505, -0.09]} zoom={1} scrollWheelZoom={false} 
-                    style={{ height: '100%'}}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
+                <MapContainer center={{lat: 48.856614, lng: 2.3522219}} zoom={8} style={{ height: '100%'}} >
+                    <LayersControl>
+                        <LayersControl.BaseLayer checked name="Default">
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                        </LayersControl.BaseLayer>
+                        <LayersControl.BaseLayer name="NASA Gibs Blue Marble">
+                            <TileLayer
+                                url="https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default//EPSG3857_500m/{z}/{y}/{x}.jpeg"
+                                attribution="&copy; NASA Blue Marble, image service by OpenGeo"
+                                maxNativeZoom={8}
+                            />
+                        </LayersControl.BaseLayer>
+                    </LayersControl>
                     {summary?.features.length  && summary.features.map((item,index) => (
                         <Marker 
                             key={'marker ' + index} 
@@ -180,10 +225,9 @@ export default function Latest() {
                             }}
                         >
                             <Tooltip>{item.properties.title}</Tooltip>
-                    
                         </Marker>
                     ))}
-                    
+                    <Control />
                 </MapContainer>
             </Grid>
             <Drawer

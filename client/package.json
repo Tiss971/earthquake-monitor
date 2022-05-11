@@ -5,6 +5,8 @@
     "dependencies": {
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
+        "@esri/arcgis-rest-geocoding": "^4.0.1",
+        "@esri/arcgis-rest-request": "^4.0.1",
         "@fortawesome/fontawesome-svg-core": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@fortawesome/react-fontawesome": "^0.1.18",
@@ -15,6 +17,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^0.26.1",
         "bcryptjs": "^2.4.3",
+        "esri-leaflet-geocoder": "^3.1.3",
         "fg-loadcss": "^3.1.0",
         "http-proxy-middleware": "^2.0.4",
         "i18next": "^21.6.16",
