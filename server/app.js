@@ -37,9 +37,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 /* SESSIONS */
-const client = mongoose.connect(process.env.DB_URI).then(
+const client = mongoose.connect(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true }).then(
     () => {
-        console.log("=== Connected to Mongo ===")
+        console.log("=== Connecting to Mongo ===")
         clientPromise = new Promise(function (resolve, reject) {
             resolve(mongoose.connection.getClient())
             reject(new Error("MongoClient Error"))

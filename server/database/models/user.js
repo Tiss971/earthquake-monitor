@@ -39,11 +39,11 @@ const UserSchema = new mongoose.Schema(
             type: {
                 type: String,
                 enum: ["Point"],
-                default: "Point",
+                default: undefined,
             },
             coordinates: {
                 type: [Number],
-                default: null,
+                default: undefined
             },
         },
         address: {
@@ -56,8 +56,17 @@ const UserSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
-    },
-    { strict: false }
+    }
 )
 
-module.exports = User = mongoose.model("users", UserSchema)
+/*try{
+    UserSchema.index({ location: '2dsphere'},{sparse: true});
+}catch(err) {
+    console.log(err)
+}*/
+
+const User = mongoose.model("users", UserSchema)
+//mongoose.set("debug",true);
+//User.ensureIndexes();
+
+module.exports = User 
