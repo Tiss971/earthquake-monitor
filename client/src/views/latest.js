@@ -1,10 +1,9 @@
-import { useState, useEffect, Fragment } from "react"
+import { useState, useEffect, useContext, Fragment } from "react"
 
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
 import Drawer from "@mui/material/Drawer"
-import Divider from "@mui/material/Divider"
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Icon from '@mui/material/Icon';
@@ -15,8 +14,10 @@ import ListItemButton from "@mui/material/ListItemButton"
 import MenuItem from '@mui/material/MenuItem';
 import Paper from "@mui/material/Paper"
 import Select from '@mui/material/Select';
+import Skeleton from "@mui/material/Skeleton"
 import Typography from "@mui/material/Typography"
 
+import { UserContext } from "App"
 import EarthquakeService from "../services/earthquakeService"
 import { geosearch, arcgisOnlineProvider} from 'esri-leaflet-geocoder';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
@@ -107,6 +108,7 @@ const getFormattedDateTime = (date) => {
 }
 
 export default function Latest() {
+    const user = useContext(UserContext);
     const [map, setMap] = useState(null)
     const [open ,setOpen] = useState(false);
     const [loading ,setLoading] = useState(false);
@@ -369,8 +371,9 @@ export default function Latest() {
                             </Paper>
                         </Grid>
                         <Grid item container sx={{overflow: 'auto'}}>
-                            {nearestUsers.length ?
-                                nearestUsers.map((user,index) => (
+                            {user 
+                            ? nearestUsers.length 
+                                ? nearestUsers.map((user,index) => (
                                     <Grid item container key={'nearestUser ' + index}>
                                         <Grid item xs={2}>
                                             <Avatar
@@ -406,12 +409,24 @@ export default function Latest() {
                                             </Button>
                                         </Grid>
                                     </Grid>
-                                )) :
-                                <Grid item>
+                                )) 
+                                : <Grid item>
                                     <Typography variant="h6">
                                         No users found
                                     </Typography>
                                 </Grid>
+                            :
+                            <Grid item xs={12}>
+                                
+                                <Typography variant="h6">
+                                    Reserved to log users
+                                </Typography>
+                                <Typography variant="h3">
+                                    <Skeleton animation="wave" />
+                                    <Skeleton animation="wave" />
+                                </Typography>
+                                
+                            </Grid>
                             }
                         </Grid>
                     </Grid>

@@ -4,7 +4,7 @@
  * Module: - App
  * Description: - Entry point of the application, contain router and pages of the application.
  */
-import {useState, useEffect} from "react"
+import {useState, useEffect, createContext} from "react"
 import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom"
 
 import Layout from "components/Layout"
@@ -23,38 +23,43 @@ import './css/App.css';
 import AuthService from "services/auth"
 import {initSocket} from "services/sioService"
 
+export const UserContext = createContext(null);
+
 const App = () => {
-    const [user,setUser] = useState(null);
+    const [user, setUser] = useState(null);
     useEffect(() => {
         AuthService.isAuthenticated().then(user => {
             if (user) {
                 localStorage.setItem("token", user.token)
                 setUser(user.user);
                 initSocket(user.user)
+                return user.user
             }
         })
     }, [])
 
     return (
-        <div className="App">
+        <div className="App"> 
             <BrowserRouter >
-                <Routes>
-                    <Route element={<Layout user={user} />}>
-                        <Route path="/" element={<Latest user={user}/>} />
-                        <Route path="/chat" element={user ? <Messages user={user}/> : <Navigate to="/"/>}>
-                            <Route path=":userID" element={<Chat />} /> 
+                <UserContext.Provider value={user}>   
+                    <Routes>
+                        <Route element={<Layout user={user} />}>
+                            <Route path="/" element={<Latest user={user}/>} />
+                            <Route path="/chat" element={user ? <Messages user={user}/> : <Navigate to="/"/>}>
+                                <Route path=":userID" element={<Chat />} /> 
+                            </Route>
+                            <Route path="/infos" element={<Infos user={user}/>} />
+                            <Route path="/stats" element={<Stats user={user}/>} />
+                            <Route path="/admin" element={user ? <Admin user={user}/> : <Navigate to="/" />} />
                         </Route>
-                        <Route path="/infos" element={<Infos user={user}/>} />
-                        <Route path="/stats" element={<Stats user={user}/>} />
-                        <Route path="/admin" element={user ? <Admin user={user}/> : <Navigate to="/" />} />
-                    </Route>
-                
-                    <Route path="/login" element={user ?<Navigate to="/" />:<Login />} />
-                    <Route path="/register" element={user ?<Navigate to="/" />:<Register />} />
+                    
+                        <Route path="/login" element={user ?<Navigate to="/" />:<Login />} />
+                        <Route path="/register" element={user ?<Navigate to="/" />:<Register />} />
 
-                    <Route path="*" element={<Error404 />} />
-                </Routes>
-            </BrowserRouter>
+                        <Route path="*" element={<Error404 />} />
+                    </Routes>
+                </UserContext.Provider>
+            </BrowserRouter> 
         </div>
     )
 }

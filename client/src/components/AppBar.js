@@ -34,7 +34,7 @@ const ResponsiveAppBar = (props) => {
         {name: "Latest", path: '/'},
         //{name: "Informations", path: '/infos'},
         {name: "Stats", path: '/stats'},
-        {name: "Chat", path: '/chat',logged:true},
+        {name: "Chat", path: '/chat', logged:true},
         {name: "Admin", path: '/admin', admin:true}
     ]
 
@@ -53,6 +53,12 @@ const ResponsiveAppBar = (props) => {
     }
 
     let navigate = useNavigate();
+    
+    const handleClick = (e,page) => {
+        const disabled = (page.logged && !user) || (page.admin && !user?.admin)
+        if(disabled) e.preventDefault()
+        else handleCloseNavMenu()
+    }
 
     // Translation I18n
     const [Language, setLanguage] = React.useState("en")
@@ -124,11 +130,11 @@ const ResponsiveAppBar = (props) => {
                                 display: { xs: "block", md: "none" },
                             }}
                         >
-                            {pages.filter(page => (!page.logged || user) && (!page.admin || user?.admin)).map((page) => (
+                            {pages.map((page) => (
                                 <NavLink 
+                                    onClick={(e) => handleClick(e,page)}
                                     key={page.name}  
-                                    to={page.path} 
-                                    onClick={handleCloseNavMenu}
+                                    to={page.path}
                                     style={({ isActive }) =>
                                         isActive ? activeStyle : inactiveStyle
                                     } 
@@ -136,6 +142,7 @@ const ResponsiveAppBar = (props) => {
                                 >
                                     {({ isActive }) => (
                                         <MenuItem 
+                                            disabled={(page.logged && !user) || (page.admin && !user?.admin)}
                                             sx={{
                                                 fontSize:  isActive ? '1.1em' : '1em', 
                                                 fontWeight: isActive ? 'bold' : 'normal',
@@ -163,8 +170,9 @@ const ResponsiveAppBar = (props) => {
 
                     {/* Link list if big */}
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                        {pages.filter(page => (!page.logged || user) && (!page.admin || user?.admin)).map((page) => (
+                        {pages.map((page) => (
                             <NavLink
+                                onClick={(e) => handleClick(e,page)}
                                 key={page.path}
                                 to={page.path}
                                 style={({ isActive }) =>
@@ -172,18 +180,18 @@ const ResponsiveAppBar = (props) => {
                                 }
                             >
                                 {({ isActive }) => (
-                                <Button
-                                    key={page.path}
-                                    onClick={() => {navigate(page.path);handleCloseNavMenu()}}
-                                    sx={{ 
-                                        display: "block", 
-                                        color: isActive ? "inherit" : "text.primary" ,
-                                        fontSize: isActive ? '1.1em' : '1em',
-                                        fontWeight: isActive ? 'bold' : 'normal',
-                                    }}
-                                >
-                                        {page.name}
-                                </Button>
+                                    <Button
+                                        key={page.path}
+                                        disabled={(page.logged && !user) || (page.admin && !user?.admin)}
+                                        sx={{ 
+                                            display: "block", 
+                                            color: isActive ? "inherit" : "text.primary" ,
+                                            fontSize: isActive ? '1.1em' : '1em',
+                                            fontWeight: isActive ? 'bold' : 'normal',
+                                        }}
+                                    >
+                                            {page.name}
+                                    </Button>
                                 )}
                             </NavLink>
                         ))}
