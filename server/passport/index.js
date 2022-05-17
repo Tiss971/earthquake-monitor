@@ -1,6 +1,7 @@
 const passport = require("passport")
 const LocalStrategy = require("./localStrategy")
 const GoogleStrategy = require("./googleStrategy.js")
+const FacebookStrategy = require("./facebookStrategy.js")
 const User = require("../database/models/user")
 
 // called on login, saves the id to session req.session.passport.user = {id:'..'}
@@ -24,5 +25,6 @@ passport.deserializeUser((id, done) => {
 //  Use Strategies
 passport.use(LocalStrategy)
 passport.use(GoogleStrategy)
+passport.use(FacebookStrategy)
 
 module.exports = passport

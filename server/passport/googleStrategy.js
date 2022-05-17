@@ -32,7 +32,7 @@ const strategy = new GoogleStrategy({
         return done(null, newUser);
     }
     console.log("User found");
-    if (userExist.third_party_auth[0].provider_name != "google") {
+    if (userExist.third_party_auth[0]?.provider_name != "google") {
         console.log("Not the same provider");
         //return error
         return done(null, false, 'You have previously signed up with a different signin method');

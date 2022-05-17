@@ -114,6 +114,23 @@ router.get('/google/callback',
     })
 );
 
+/* Facebook */
+router.get('/facebook/failure', (req, res) => {
+    res.status(401).json({
+        ok: false,
+        message: "Facebook login failed",
+    })
+})
+router.get('/facebook', 
+    passport.authenticate('facebook')
+);
+router.get('/facebook/callback',
+    passport.authenticate('facebook', {scope:'email', failureRedirect: '/login', failureMessage: true  }),
+    (req, res) => {
+        res.redirect('http://localhost:3000')
+    }
+);
+
 /* Get user info */
 router.get('/success', (req, res) => {
     if (req.user) {
@@ -138,10 +155,16 @@ router.get('/success', (req, res) => {
 /* Logout */
 router.get("/logout", (req, res) => {
     req.logout()
-    res.send({ 
-        ok: true,
-        message: "Logging out" 
-    })
+    res.status(200).clearCookie('connect.sid', {
+        path: '/'
+    });
+    req.session.destroy(function (err) {
+        res.send({ 
+            ok: true,
+            message: "Logging out" 
+        })
+    });
+   
 })
 
 module.exports = router

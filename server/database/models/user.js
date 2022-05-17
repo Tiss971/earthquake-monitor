@@ -21,12 +21,13 @@ const UserSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
-            unique: true,
         },
         email: {
             type: String,
-            required: true,
-            unique: true,
+            trim: true, 
+            index: true, 
+            unique: true, 
+            sparse: true
         },
         password: {
             type: String,
@@ -59,11 +60,11 @@ const UserSchema = new mongoose.Schema(
     }
 )
 
-/*try{
-    UserSchema.index({ location: '2dsphere'},{sparse: true});
+try{
+    UserSchema.index({ username: 1, 'third_party_auth.provider_name': 1 }, { unique: true });
 }catch(err) {
     console.log(err)
-}*/
+}
 
 const User = mongoose.model("users", UserSchema)
 //mongoose.set("debug",true);

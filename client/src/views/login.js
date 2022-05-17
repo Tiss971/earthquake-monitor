@@ -8,7 +8,7 @@ import Container from "@mui/material/Container"
 import Divider from '@mui/material/Divider'
 import Grid from "@mui/material/Grid"
 import Grow from '@mui/material/Grow'
-import Icon from "@mui/material/Icon"
+import {Google, Facebook, Twitter} from "@mui/icons-material"
 import Link from "@mui/material/Link"
 import Typography from "@mui/material/Typography"
 
@@ -30,9 +30,11 @@ function Login() {
 
     /* GOOGLE LOGIN */
     const google = () => {
-        //let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-        //   width=600,height=600,left=100,top=100`;
         window.open("http://localhost:5000/auth/google", "_self");
+    }
+    /* FACEBOOK LOGIN */
+    const facebook = () => {
+        window.open("http://localhost:5000/auth/facebook", "_self");
     }
    
     /* Username and Password Login */
@@ -153,14 +155,24 @@ function Login() {
                         </Grid>
                         {/* Google Login */}
                         <Divider sx={{my:2}}> Or log with </Divider>
-                        
-                        <Button 
-                            variant="contained"
-                            onClick={google}
-                            startIcon={<Icon baseClassName="fas" className="fa-google" />}
-                        >
-                            Login with Google
-                        </Button>
+                        <Grid container item sx={{justifyContent:'space-around'}}>
+                            <Button 
+                                variant="contained"
+                                sx={{backgroundColor:'#DE5246',  '&:hover': {backgroundColor:'red'}}}
+                                onClick={google}
+                                startIcon={<Google/>}
+                            >
+                                Google
+                            </Button>
+                            <Button 
+                                variant="contained"
+                                sx={{backgroundColor:'#3b5998', '&:hover': {backgroundColor:'blue'}}}
+                                onClick={facebook}
+                                startIcon={<Facebook/>}
+                            >
+                                Facebook
+                            </Button>
+                        </Grid>
                     </Grid> 
                 </div>
             </form>
