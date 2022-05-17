@@ -1,26 +1,39 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useContext } from "react"
+import { UserContext } from "App"
 import { useParams } from "react-router-dom";
 import {
-    initSocket,
     disconnectSocket,
     subscribeToMessages,
     sendMessage,
-    joinRoom,
 } from "services/sioService"
 
 import {useTheme} from '@mui/material/styles';
 
-import "css/chat.css"
 import UserMessage from "./UserMessage"
-import SystemMessage from "./SystemMessage"
 
+import Avatar from "@mui/material/Avatar"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Grid from "@mui/material/Grid"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import Icon from "@mui/material/Icon"
+
 import userService from "services/userService"
+
+const getFormattedDateTime = (date) => {
+    const dateObj = new Date(date)
+    return dateObj.toLocaleString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false
+        })    
+}
 
 function DateToHoursAndMinutes(datestring) {
     const date = new Date(datestring)
@@ -30,24 +43,19 @@ function DateToHoursAndMinutes(datestring) {
 function Chat(props) {
     const params = useParams()
     const theme = useTheme()
-    const MAIN_CHAT_ROOM = "main"
+    const mySelf = useContext(UserContext);
 
-    const [user, setUser] = useState(null)
-    const [token, setToken] = useState(localStorage.getItem("token"))
+    const [toUser, setToUser] = useState(null)
     const [chatMessage, setChatMessage] = useState([])
     const [messages, setMessages] = useState([])
-    const [room, setRoom] = useState(MAIN_CHAT_ROOM)
-
-    const roomInputRef = useRef("")
 
     useEffect(() => {
         async function fetchData() {
             await userService.getUserById(params.userID).then(user => {
-                setUser(user)
+                setToUser(user)
             })
         }
         fetchData()
-
         subscribeToMessages((err, data) => {
             setMessages((prev) => [...prev, data])
         })
@@ -55,33 +63,22 @@ function Chat(props) {
         return () => {
             disconnectSocket()
         }
-    }, [token,params])
-
-    const submitRoom = (e) => {
-        // TODO: add dynamic room support
-        e.preventDefault()
-        const roomValue = roomInputRef.current.value
-        setRoom(roomValue)
-        joinRoom(roomValue, (cb) => {
-            console.log(cb)
-        })
-    }
+    }, [params])
 
     /* SEND MESSAGE*/
     const submitMessage = (e) => {
         e.preventDefault()
-        const message = chatMessage
-        if (message) {
-            sendMessage({ message, roomName: "main" }, (cb) => {
-                // TODO: add dynamic room support
-                // clear the input after the message is sent
+        const message = chatMessage.trim()
+        if (message.length === 0 || !message) return
+        sendMessage({ message, toId: toUser._id }, (cb) => {
+            if (cb.status === "ok") {
                 setChatMessage("")
-                setMessages((prev) => [
-                    ...prev,
-                    { username: "Me", message: message, self: true },
-                ])
-            })
-        }
+            }
+            else{
+                // TODO: handle error status === 'error' ; msg = message to display
+                console.log(cb)
+            }
+        })
     }
     const inputChange = (e) => {
         e.preventDefault()
@@ -93,73 +90,41 @@ function Chat(props) {
             container
             wrap="nowrap"
             direction="column"
-            className="chat-wrapper"
+            height="100%"
         >   
-            <Grid item xs={12}>
-                
+            <Grid item>
                 <Toolbar sx={{backgroundColor: theme.palette.primary.main}}>
-                    <Typography variant="h6" component="div">
-                        {user?.username}
-                    </Typography>
+                    <Avatar src={toUser?.image} sx={{mr:2}} />
+                    <Typography variant="h6"  sx={{mr:2}} >{toUser?.username}</Typography>
+                    <Typography variant="caption">Last connexion : {getFormattedDateTime(toUser?.lastVisit)}</Typography>
                 </Toolbar>
-                
-
             </Grid>
-            
+            {/* Messages */ }
             <Grid
                 container
-                wrap="nowrap"
+                xs
                 item
+                wrap="nowrap"
                 direction="column"
                 rowSpacing={1}
-                className="chat-messages"
+                sx={{overflowY:"auto"}}
             >
-                {messages.map((item, k) => (
-                    <>
-                        {item.message ? (
-                            <UserMessage
-                                avatar={""}
-                                side={item.self ? "right" : "left"}
-                                sender={item.name}
-                                message={item.message}
-                                time={DateToHoursAndMinutes(item.time)}
-                            />
-                        ) : (
-                            <>
-                                {item.systemMsg === "connection" ? (
-                                    <SystemMessage
-                                        type="success"
-                                        message={
-                                            item.name + " has joined the chat"
-                                        }
-                                    />
-                                ) : (
-                                    <>
-                                        {item.systemMsg === "disconnection" ? (
-                                            <SystemMessage
-                                                type="error"
-                                                message={
-                                                    item.name +
-                                                    " has left the chat"
-                                                }
-                                            />
-                                        ) : (
-                                            <SystemMessage
-                                                type="warning"
-                                                message={
-                                                    item.name + item.systemMsg
-                                                }
-                                            />
-                                        )}
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </>
-                ))}
+                {messages.map((item, k) => (  
+                    <UserMessage
+                        key={k}
+                        avatar={item.from === mySelf._id ? mySelf.image : toUser.image}
+                        side={item.from === mySelf._id ? "right" : "left"}
+                        sender={item.from === mySelf._id ? mySelf.username : toUser.username}
+                        message={item.message}
+                        time={DateToHoursAndMinutes(item.time)}
+                    /> 
+                ))}                    
             </Grid>
-            <Grid item>
-                <form className="chat-input" onSubmit={submitMessage}>
+            {/* Input */}
+            <form onSubmit={submitMessage}>
+            <Grid item container >
+            
+                <Grid item xs={8}>
                     <TextField
                         autoFocus
                         placeholder="Send a message"
@@ -168,18 +133,23 @@ function Chat(props) {
                         fullWidth
                         onChange={inputChange}
                     />
+                </Grid>
+                <Grid item>
                     <Button
                         variant="contained"
                         type="submit"
+                        sx={{height: "100%", width: "100%"}}
                         endIcon={ <Icon   
                             baseClassName="fas" 
-                            className="fa-paper-plane-top"
+                            className="fa-paper-plane"
                         />}
                     >
                         Submit
                     </Button>
-                </form>
+                </Grid>
+               
             </Grid>
+            </form>
         </Grid>
        
     )

@@ -36,6 +36,13 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+const cors = require("cors")
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+}))
+
 /* SESSIONS */
 const client = mongoose.connect(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true }).then(
     () => {
@@ -52,7 +59,7 @@ const client = mongoose.connect(process.env.DB_URI,{ useNewUrlParser: true, useU
     }
 )
 const sessionMiddleware =  session({
-    secret: "randomString",
+    secret: "cpywbzgBn7CR94gRViRo",
     store: MongoStore.create({ client }),
     resave: false,
     saveUninitialized: false,
@@ -61,77 +68,60 @@ const sessionMiddleware =  session({
     }
 })
 app.use(sessionMiddleware)
-
-/* PASSPORT & MIDDLEWARE*/
-//const auth = require('./middleware/auth.js')()
-//app.use(auth.initialize());
-
 app.use(passport.initialize()) // initialize passport
 app.use(passport.session()) // calls the deserializeUser
-
-const cors = require("cors")
-app.use(cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-}))
 
 /* ROUTES */
 app.use("/auth", authRouter)
 app.use("/user", userRouter)
 app.use("/earthquake", earthquakeRouter)
 
-
-
-
-
 /* CHAT WEBSOCKET */
 // Create a new instance of socket.io
 const { Server } = require("socket.io")
 const server = http.createServer(app)
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST", "PUT", "DELETE"],
-    },
-})
 
+const io = new Server(server)
+
+// convert a connect middleware to a Socket.IO middleware
+const wrap = middleware => (socket, next) =>  middleware(socket.request, {}, next);
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
+io.use((socket, next) => {
+    if (socket.request.user) {
+        next();
+    } else {
+        next(new Error('unauthorized'))
+    }
+});
+
+const OnlineUser = require("./database/models/onlineUsers")
 // Websocket handling imports
 const registerChatHandlers = require("./controllers/ws/chatHandler")
-const onConnection = (socket) => {
-    socket.user = socket.handshake.auth.user
-    // Store user on websocket
-    const users = [];
-    for (let [id, socket] of io.of("/").sockets) {
-        users.push({
-            socketID: id,
-            userID: socket.user._id,
-            username: socket.user.username,
-        });
-    }
-    socket.emit("users", users);
+io.on('connect', (socket) => {
+    console.log('New User Logged In with ID '+socket.id);
+    // Set user online
+    console.log(socket.request.user.username, socket.id)
+    OnlineUser.findOneAndUpdate(
+        {userId: socket.request.user._id}, 
+        {$set: {userId: socket.request.user._id, socketId: socket.id, name: socket.request.user.username}}, 
+        {new: true, upsert: true}, (err, doc) => {
+            if (err) {
+                console.log(err)
+            }
+            else console.log(doc.name + " is now online")
+        }
+    )
 
-    // Join common room
-    //socket.join("main")
 
-    console.log(socket.user.username + " connected")
-    socket
-        .to("main")
-        .emit("otherConnect", { name: socket.user.username, systemMsg: "connection" })
+    const session = socket.request.session;
+    //console.log(`saving sid ${socket.id} in session ${session.id}`);
+    session.socketId = socket.id;
+    session.save();
 
-    socket.on("disconnect", () => {
-        console.log(socket.user.username + " disconnected")
-        socket.to("main").emit("otherDisconnect", {
-            name: socket.user.name,
-            systemMsg: "disconnection",
-        })
-    })
-
-    // Register handlers here
     registerChatHandlers(io, socket)
-}
-io.on("connection", onConnection)
-// Verify JWT token
-io.use((socket,next) => sessionMiddleware(socket.request, {}, next));
+});
 
 module.exports = { io, app, server }

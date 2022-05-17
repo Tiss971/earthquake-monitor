@@ -1,5 +1,7 @@
 import { useState, useEffect, useContext, Fragment } from "react"
 
+import { UserContext } from "App"
+
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CircularProgress from "@mui/material/CircularProgress"
@@ -17,8 +19,10 @@ import Select from '@mui/material/Select';
 import Skeleton from "@mui/material/Skeleton"
 import Typography from "@mui/material/Typography"
 
-import { UserContext } from "App"
+import { Link } from "react-router-dom";
+
 import EarthquakeService from "../services/earthquakeService"
+
 import { geosearch, arcgisOnlineProvider} from 'esri-leaflet-geocoder';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import '../css/App.css';
@@ -103,8 +107,7 @@ const getFormattedDateTime = (date) => {
         minute: "numeric",
         second: "numeric",
         hour12: false
-        })
-        
+        })    
 }
 
 export default function Latest() {
@@ -399,13 +402,13 @@ export default function Latest() {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={3}>
-                                            <Button variant="contained" href={`/chat/${user._id}`}>
+                                            <Button variant="contained">
                                                 <Icon
                                                     sx={{color:'black',mr:2}}
                                                     baseClassName="fas"
                                                     className="fa-link"
                                                 />
-                                                Chat
+                                                 <Link to={`/chat/${user._id}`}>Chat</Link>
                                             </Button>
                                         </Grid>
                                     </Grid>

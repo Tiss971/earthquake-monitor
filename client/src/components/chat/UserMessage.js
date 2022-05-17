@@ -1,42 +1,35 @@
-import React from "react"
-import PropTypes from "prop-types"
 import Grid from "@mui/material/Grid"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 
 export default function UserMessage(props) {
-    const {avatar, messages, side} = props
+    const {avatar, message, sender, side, time} = props
     return (
         <Grid
             container
             item
-            justify={side === "right" ? "flex-end" : "flex-start"}
+            direction={side === "left" ? "row" : "row-reverse"}
+            alignItems="center"
+            wrap = "nowrap"
         >
-            {side === "left" && (
-                <Grid item>
-                    <Avatar src={avatar} />
-                </Grid>
-            )}
-            <Grid item xs={8}>
-                <Typography
-                    align={side}
-                >
-                    {side === "left" ? messages.sender + " : " : ""} {messages}
+            <Grid item>
+                <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
+            </Grid>
+            <Grid item
+                sx={{
+                    mx:2,
+                    borderRadius: "10px",
+                    color: "black",
+                    backgroundColor: side === "left" ? "secondary.main" : "accent.main",
+                    padding: "10px",
+                    margin: "10px",
+                    maxWidth: "calc(100% - 20px)"
+                }}
+            >
+                <Typography variant="body" align={side} sx={{wordBreak : 'break-word'}} >
+                    {message}
                 </Typography>
             </Grid>
         </Grid>
     )
-}
-    
-
-UserMessage.propTypes = {
-    avatar: PropTypes.string,
-    messages: PropTypes.arrayOf(PropTypes.string),
-    side: PropTypes.oneOf(["left", "right"]),
-}
-UserMessage.defaultProps = {
-    avatar: "",
-    messages: [],
-    side: "left",
-    time: null,
 }

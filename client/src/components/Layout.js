@@ -63,7 +63,7 @@ const Layout = (props) => {
                     main: mode === 'dark' ? "#146356" : "#A3DA8D",
                 },
                 secondary: {
-                    main: mode === 'dark' ? "#FFF1BD" : "#F3C892",
+                    main: mode === 'dark' ? "#ffb347 " : "#F3C892",
                 },
                 accent: {
                     main: "#CADEFC",

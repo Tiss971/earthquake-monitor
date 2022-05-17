@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -44,7 +45,8 @@ export default function ListUsers(props) {
         setSelectedIndex(index);
     };
     const handleSearch = (user) => {
-        navigate(`/chat/${user._id}`)
+        if (user)
+            navigate(`/chat/${user._id}`)
     };
     
     // Get users TODO: get old conversations
@@ -59,39 +61,50 @@ export default function ListUsers(props) {
     }, []);
 
   return (
-    <React.Fragment>
-        <Autocomplete
-            open={open}
-            clearOnEscape
-            freeSolo
-            onOpen={() => {
-                setOpen(true);
-            }}
-            onClose={() => {
-                setOpen(false);
-            }}
-            onChange={(e, value) => handleSearch(value)}
-            isOptionEqualToValue={(option, value) => option.username === value.username}
-            getOptionLabel={(option) => option.username}
-            options={users}
-            loading={loading}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Search among all users"
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <React.Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                {params.InputProps.endAdornment}
-                            </React.Fragment>
-                        ),
-                    }}
-                />
-            )}
-        />
-        <Paper sx={{maxHeight: '85vh', overflow: 'auto'}}>
+    <Grid  
+        container
+        wrap="nowrap"
+        direction="column"
+        height="100%"
+    >
+        {/* SearchBar */}
+        <Grid item>
+            <Autocomplete
+                sx={{m:1}}
+                open={open}
+                clearOnEscape
+                freeSolo
+                onOpen={() => {
+                    setOpen(true);
+                }}
+                onClose={() => {
+                    setOpen(false);
+                }}
+                onChange={(e, value) => handleSearch(value)}
+                isOptionEqualToValue={(option, value) => option.username === value.username}
+                getOptionLabel={(option) => option.username}
+                options={users}
+                loading={loading}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Search among all users"
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <React.Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                    {params.InputProps.endAdornment}
+                                </React.Fragment>
+                            ),
+                        }}
+                    />
+                )}
+            />
+        </Grid>
+
+        {/* Select list */}
+        <Grid item xs>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {activeUsers.map((user,index) => (
                     <React.Fragment key={'index' + user._id}>
@@ -136,8 +149,7 @@ export default function ListUsers(props) {
                 </React.Fragment>
                 ))}
             </List>
-        </Paper> 
-    </React.Fragment>
-    
+        </Grid> 
+    </Grid>
   );
 }

@@ -33,7 +33,6 @@ const App = () => {
                 localStorage.setItem("token", user.token)
                 setUser(user.user);
                 initSocket(user.user)
-                return user.user
             }
         })
     }, [])
