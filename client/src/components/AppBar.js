@@ -1,4 +1,6 @@
 import * as React from "react"
+import {useContext} from "react"
+import { UserContext } from "App"
 import { useNavigate, NavLink } from "react-router-dom"
 import i18next from "../i18n"
 
@@ -28,7 +30,7 @@ const ResponsiveAppBar = (props) => {
     const theme = useTheme();
     const [anchorElNav, setAnchorElNav] = React.useState(null)
     const [anchorElUser, setAnchorElUser] = React.useState(null)
-    const user = props.user;
+    const {user, setUser} = useContext(UserContext)
 
     const pages = [
         {name: "Latest", path: '/'},
@@ -276,8 +278,17 @@ const ResponsiveAppBar = (props) => {
                                 <Divider variant='middle' sx={{my:1}}></Divider>
                                 <Button fullWidth
                                     onClick={() => {
-                                        AuthService.logout();
-                                        handleCloseUserMenu();
+                                        AuthService.logout().then((response) => {
+                                            if (response.data.ok) {
+                                                localStorage.removeItem("token")
+                                                localStorage.removeItem("user")
+                                                setUser(null)
+                                            }
+                                        })
+                                        .then(() => {
+                                            navigate('/login')
+                                        });
+                                        handleCloseUserMenu()
                                     }}
                                     variant="contained"
                                     color="error"

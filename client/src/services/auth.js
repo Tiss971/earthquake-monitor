@@ -41,12 +41,7 @@ const logout = () => {
     return axios
         .get(API_URL + "/auth/logout", { withCredentials: true })
         .then((response) => {
-            if (response.data.ok) {
-                localStorage.removeItem("token")
-                localStorage.removeItem("user")
-                window.location.href = "/login"
-            }
-            return response.data
+            return response
         })
 }
 const privateTest = () => {

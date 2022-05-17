@@ -4,7 +4,7 @@
  * Module: - App
  * Description: - Entry point of the application, contain router and pages of the application.
  */
-import {useState, useEffect, createContext} from "react"
+import {useState, useEffect, useMemo, createContext} from "react"
 import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom"
 
 import Layout from "components/Layout"
@@ -23,10 +23,17 @@ import './css/App.css';
 import AuthService from "services/auth"
 import {initSocket} from "services/sioService"
 
-export const UserContext = createContext(null);
+export const UserContext = createContext({
+    user: null,
+    setUser: () => {},
+});
 
 const App = () => {
     const [user, setUser] = useState(null);
+    const value = useMemo(
+        () => ({ user, setUser }),
+        [user]
+    );
     useEffect(() => {
         AuthService.isAuthenticated().then(user => {
             if (user) {
@@ -40,7 +47,7 @@ const App = () => {
     return (
         <div className="App"> 
             <BrowserRouter >
-                <UserContext.Provider value={user}>   
+                <UserContext.Provider value={value}>   
                     <Routes>
                         <Route element={<Layout user={user} />}>
                             <Route path="/" element={<Latest user={user}/>} />
