@@ -1,5 +1,4 @@
 import axios from "axios"
-import authHeader from "./authHeader"
 const API_URL = process.env.REACT_APP_API_ENDPOINT
 
 const getLatest = (time,magnitude) => {

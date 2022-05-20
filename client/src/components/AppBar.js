@@ -98,7 +98,7 @@ const ResponsiveAppBar = (props) => {
                         component="div"
                         sx={{ mr: 2, justifyContent:'center', alignItems:'center', display: { xs: "none", md: "flex" } }}
                     >
-                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'}/>
+                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'} alt="logo"/>
                         Earthquake Monitor
                     </Typography>
 
@@ -166,7 +166,7 @@ const ResponsiveAppBar = (props) => {
                         variant="h6"
                         component="div"
                     >
-                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'}/>
+                        <img height='48px' src={process.env.PUBLIC_URL + '/images/logo.png'} alt="logo"/>
                         Earthquake Monitor
                     </Typography>
 

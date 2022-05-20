@@ -3,7 +3,7 @@ import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 
 export default function UserMessage(props) {
-    const {avatar, message, sender, side, time} = props
+    const {avatar, message, side, timestamp} = props
     return (
         <Grid
             container
@@ -23,11 +23,18 @@ export default function UserMessage(props) {
                     backgroundColor: side === "left" ? "secondary.main" : "accent.main",
                     padding: "10px",
                     margin: "10px",
-                    maxWidth: "calc(100% - 20px)"
+                    maxWidth: "calc(100% - 20px)",
+                    position: "relative"
                 }}
             >
                 <Typography variant="body" align={side} sx={{wordBreak : 'break-word'}} >
                     {message}
+                </Typography>
+               
+            </Grid>
+            <Grid item>
+                <Typography variant="caption" align={side} sx={{color:'white'}}>
+                    {timestamp}
                 </Typography>
             </Grid>
         </Grid>

@@ -39,7 +39,7 @@ export default function ArgisAutocomplete() {
                     setOptions(newOptions);
                 });
             },500),
-        [],
+        [value],
     );
 
     useEffect(() => {

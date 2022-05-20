@@ -8,7 +8,7 @@ import Container from "@mui/material/Container"
 import Divider from '@mui/material/Divider'
 import Grid from "@mui/material/Grid"
 import Grow from '@mui/material/Grow'
-import {Google, Facebook, Twitter} from "@mui/icons-material"
+import {Google, Facebook} from "@mui/icons-material"
 import Link from "@mui/material/Link"
 import Typography from "@mui/material/Typography"
 

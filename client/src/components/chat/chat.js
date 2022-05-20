@@ -50,6 +50,7 @@ function Chat(props) {
 
     useEffect(() => {
         async function fetchData() {
+            //TODO: FIX WHEN CHANGING X TIMES USER ID IN URL IT SEND X TIMES THE MESSAGE 
             await userService.getUserById(params.userID).then(user => {
                 setToUser(user)
             })
@@ -101,7 +102,6 @@ function Chat(props) {
                 item
                 wrap="nowrap"
                 direction="column"
-                rowSpacing={1}
                 sx={{overflowY:"auto"}}
             >
                 {messages.map((item, k) => (  
@@ -109,17 +109,15 @@ function Chat(props) {
                         key={k}
                         avatar={item.from === mySelf._id ? mySelf.image : toUser.image}
                         side={item.from === mySelf._id ? "right" : "left"}
-                        sender={item.from === mySelf._id ? mySelf.username : toUser.username}
                         message={item.message}
-                        time={DateToHoursAndMinutes(item.time)}
+                        timestamp={DateToHoursAndMinutes(item.timestamp)}
                     /> 
                 ))}                    
             </Grid>
             {/* Input */}
             <form onSubmit={submitMessage}>
             <Grid item container >
-            
-                <Grid item xs={8}>
+                <Grid item xs>
                     <TextField
                         autoFocus
                         placeholder="Send a message"

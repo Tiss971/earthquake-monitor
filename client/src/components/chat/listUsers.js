@@ -10,7 +10,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import TextField from '@mui/material/TextField';
@@ -18,7 +17,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import userService from 'services/userService';
-import {initSocket,getUsers} from 'services/sioService';
+import {getUsers} from 'services/sioService';
 
 export default function ListUsers(props) {
     let navigate =useNavigate()
