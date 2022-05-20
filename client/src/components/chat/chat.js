@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react"
 import { UserContext } from "App"
 import { useParams } from "react-router-dom";
 import {
-    disconnectSocket,
     subscribeToMessages,
     sendMessage,
 } from "services/sioService"
@@ -59,10 +58,6 @@ function Chat(props) {
         subscribeToMessages((err, data) => {
             setMessages((prev) => [...prev, data])
         })
-        // Cleanup when user disconnects
-        return () => {
-            disconnectSocket()
-        }
     }, [params])
 
     /* SEND MESSAGE*/

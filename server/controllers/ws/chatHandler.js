@@ -62,7 +62,6 @@ module.exports = (io, socket) => {
             }
             if (user) {
                 // Send message to user
-                console.log(user.name)
                 socket.to(user.socketId).emit("receiveMessage", newMessage)
             }
             else console.log("User not online")

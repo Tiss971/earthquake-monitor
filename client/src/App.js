@@ -21,7 +21,7 @@ import Error404 from "./views/error404"
 import './css/App.css';
 
 import AuthService from "services/auth"
-import {initSocket} from "services/sioService"
+import {initSocket,disconnectSocket} from "services/sioService"
 
 export const UserContext = createContext({
     user: null,
@@ -42,6 +42,10 @@ const App = () => {
                 initSocket(user.user)
             }
         })
+        // Cleanup when user disconnects
+        return () => {
+            disconnectSocket()
+        }
     }, [])
 
     return (
