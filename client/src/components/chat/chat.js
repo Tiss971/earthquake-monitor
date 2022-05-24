@@ -1,12 +1,10 @@
 import { useEffect, useState, useContext, useRef} from "react"
-import { UserContext } from "App"
-import { useParams } from "react-router-dom";
-import {
-    subscribeToMessages,
-    sendMessage,
-} from "services/sioService"
+import { UserContext } from 'App'
+import { SocketContext } from 'App'
+import { useParams } from "react-router-dom"
 
-import {useTheme} from '@mui/material/styles';
+
+import {useTheme} from '@mui/material/styles'
 
 import UserMessage from "./UserMessage"
 
@@ -42,7 +40,9 @@ function DateToHoursAndMinutes(datestring) {
 function Chat(props) {
     const params = useParams()
     const theme = useTheme()
+
     const mySelf = useContext(UserContext);
+    const { socketService } = useContext(SocketContext);
 
     const [toUser, setToUser] = useState({})
     const toUserRef = useRef(toUser);
@@ -58,16 +58,20 @@ function Chat(props) {
             })
         }
         fetchData()
-        subscribeToMessages((err, data) => {
+        socketService.subscribeToMessages((err, data) => {
             setMessages((prev) => ({
                 ...prev, 
                 [toUserRef.current._id] : [...prev[toUserRef.current._id], {message : data.message, timestamp : data.timestamp}]
             }))
         })
+        //cleanup
+        return () => {
+            socketService.unsubscribeToMessages()
+        }
     }, [params])
 
+    /* Init messages */
     useEffect(() => {
-        // add touser.id if not exist in object messages
         if(!messages[toUser._id] && toUser) {
             setMessages((prev) => ({
                 ...prev,
@@ -81,7 +85,7 @@ function Chat(props) {
         e.preventDefault()
         const message = chatMessage.trim()
         if (message.length === 0 || !message) return
-        sendMessage({ message, toId: toUser?._id }, (cb) => {
+        socketService.sendMessage({ message, toId: toUser?._id }, (cb) => {
             if (cb.status === "ok") {
                 setChatMessage("")
             }

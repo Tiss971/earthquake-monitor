@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import { useNavigate } from 'react-router';
 
@@ -17,10 +17,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import userService from 'services/userService';
-import {getUsers} from 'services/sioService';
+import { SocketContext } from 'App'
 
 export default function ListUsers(props) {
-    let navigate =useNavigate()
+    const { socketService } = useContext(SocketContext);
+    let navigate = useNavigate()
     const [users, setUsers] = useState([]);
     const [activeUsers, setActiveUsers] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -51,7 +52,7 @@ export default function ListUsers(props) {
     // Get users TODO: get old conversations
     useEffect(() => {
         // Get users
-        getUsers((err, data) => {
+        socketService.getUsers((err, data) => {
             setActiveUsers(data)
         })
         userService.getAll().then(users => {
@@ -84,6 +85,13 @@ export default function ListUsers(props) {
                 getOptionLabel={(option) => option.username}
                 options={users}
                 loading={loading}
+                renderOption={(props, user) => {
+                    return (
+                      <li {...props} key={user._id}>
+                        {user.username}
+                      </li>
+                    );
+                  }}
                 renderInput={(params) => (
                     <TextField
                         {...params}

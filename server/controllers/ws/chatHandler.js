@@ -2,36 +2,6 @@ const OnlineUser = require("../../database/models/onlineUsers")
 const Message = require("../../database/models/messages")
 
 module.exports = (io, socket) => {
-    
-    socket.on("chat:send", ({ username, message, roomName }, callback) => {
-        // generate data to send to receivers
-        const outgoingMessage = {
-            name: username,
-            id: socket.id,
-            message,
-        }
-
-        // TODO store message in database
-
-        // send socket to all in room except sender
-        socket.to(roomName).emit("chat:message", outgoingMessage)
-        callback({
-            status: "ok",
-        })
-    })
-
-    socket.on("chat:join", (roomName) => {
-        console.log("join: " + roomName)
-        socket.leave
-        socket.join(roomName)
-
-        const outgoingMessage = {
-            name: "SERVER",
-            id: "server",
-            message: `${socket.id} has joined.`,
-        }
-        socket.to(roomName).emit("message", outgoingMessage)
-    })
     socket.on("sendMessage", ({message, toId}, callback)=> {
         // Save message to database
         const newMessage = {

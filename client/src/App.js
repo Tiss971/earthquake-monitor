@@ -21,7 +21,9 @@ import Error404 from "./views/error404"
 import './css/App.css';
 
 import AuthService from "services/auth"
-import {SocketContext, socket} from 'services/sioService';
+
+import {socketService, socket} from 'services/sioService';
+export const SocketContext = createContext()
 
 export const UserContext = createContext({
     user: null,
@@ -48,7 +50,7 @@ const App = () => {
             <BrowserRouter >
                 <UserContext.Provider value={value}>   
                     <Routes>
-                        <Route element={<SocketContext.Provider value={socket}><Layout user={user} /></SocketContext.Provider>}>
+                        <Route element={<SocketContext.Provider value={{socket, socketService}}><Layout user={user} /></SocketContext.Provider>}>
                             <Route path="/" element={<Latest user={user}/>} />
                             <Route path="/chat" element={user ? <Messages user={user}/> : <Navigate to="/"/>}>
                                 <Route path=":userID" element={<Chat />} /> 

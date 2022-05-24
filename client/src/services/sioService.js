@@ -2,40 +2,31 @@ import React from "react"
 import { io } from "socket.io-client"
 let apiURL = process.env.REACT_APP_API_ENDPOINT
 
-export const SocketContext = React.createContext()
-
 export const socket = io(apiURL,{
         withCredentials: true,
         transports: ['websocket'],
 })
 
-export const disconnectSocket = () => {
+const disconnectSocket = () => {
     if (socket) socket.disconnect()
 }
 
-export const subscribeToMessages = (cb) => {
+const subscribeToMessages = (cb) => {
     if (!socket) return true
-    socket.on("chat:message", (msg) => {
-        return cb(null, msg)
-    })
     socket.on("receiveMessage", (msg) => {
         return cb(null, msg)
     })
 }
+const unsubscribeToMessages = () => {
+    if (!socket) return true
+    socket.off("receiveMessage")
+}
 
-export const sendMessage = ({ message, toId }, cb) => {
+const sendMessage = ({ message, toId }, cb) => {
     if (socket) socket.emit("sendMessage", {message, toId}, cb)
 }
 
-export const joinRoom = (roomName, cb) => {
-    if (socket) socket.emit("join", roomName, cb)
-}
-
-export const leaveRoom = (roomName, cb) => {
-    if (socket) socket.emit("leave", roomName, cb)
-}
-
-export const getUsers = (cb) => {
+const getUsers = (cb) => {
     if (!socket) return true
     socket.on("users", (users) => {
         console.log(users)
@@ -46,4 +37,12 @@ export const getUsers = (cb) => {
         });
         return cb(null, userList)
       });
+}
+
+export const socketService = {
+    disconnectSocket,
+    subscribeToMessages,
+    sendMessage,
+    getUsers,
+    unsubscribeToMessages
 }
