@@ -18,26 +18,7 @@ import TextField from "@mui/material/TextField"
 import Icon from "@mui/material/Icon"
 
 import userService from "services/userService"
-
-const getFormattedDateTime = (date) => {
-    const dateObj = new Date(date)
-    return dateObj.toLocaleString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        hour12: false
-        })    
-}
-
-function DateToHoursAndMinutes(datestring) {
-    const date = new Date(datestring)
-    return date.toLocaleTimeString().slice(0, 5)
-}
-
+import {getFormattedDateTime, DateToHoursAndMinutes } from '../../utils/date'
 function Chat(props) {
     const params = useParams()
     const theme = useTheme()

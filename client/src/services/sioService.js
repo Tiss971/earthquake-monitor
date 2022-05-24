@@ -46,11 +46,22 @@ const getMessages = ({ toId, skip, limit }, cb) => {
     })
 }
 
+const getOldCorrespondent = (cb) => {
+    if (!socket) return true
+    socket.emit("getOldCorrespondent", (correspondent) => {
+        return cb(null, correspondent)
+    })
+    socket.on("updateOldCorrespondent", (correspondent) => {
+        return cb(null, correspondent)
+    })
+}
+
 export const socketService = {
     disconnectSocket,
     subscribeToMessages,
     unsubscribeToMessages,
     sendMessage,
     getUsers,
-    getMessages
+    getMessages,
+    getOldCorrespondent
 }

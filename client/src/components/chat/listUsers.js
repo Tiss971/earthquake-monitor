@@ -18,12 +18,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import userService from 'services/userService';
 import { SocketContext } from 'App'
+import { UserContext } from 'App'
+
+
+import { DateToHoursAndMinutes } from '../../utils/date'
 
 export default function ListUsers(props) {
     const { socketService } = useContext(SocketContext);
+    const { user } = useContext(UserContext);
     let navigate = useNavigate()
     const [users, setUsers] = useState([]);
-    const [activeUsers, setActiveUsers] = useState([]);
+    const [onlineUsers, setOnlineUsers] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     // SearchBar
@@ -40,8 +45,8 @@ export default function ListUsers(props) {
     }, [loading]);    
     
     // Select list
-    const handleListItemClick = (event,index) => {
-        navigate(`/chat/${users[index]._id}`)
+    const handleListItemClick = (event,index, userId) => {
+        navigate(`/chat/${userId}`)
         setSelectedIndex(index);
     };
     const handleSearch = (user) => {
@@ -49,11 +54,13 @@ export default function ListUsers(props) {
             navigate(`/chat/${user._id}`)
     };
     
-    // Get users TODO: get old conversations
+    // Get users 
     useEffect(() => {
         // Get users
-        socketService.getUsers((err, data) => {
-            setActiveUsers(data)
+        socketService.getOldCorrespondent((err, data) => {
+            // TODO: Fix bug don't show the conv if the user hasn't respond
+            const users = data.users.filter(correspondent => correspondent.from !== user._id)
+            setOnlineUsers(users)
         })
         userService.getAll().then(users => {
             setUsers(users);
@@ -113,13 +120,13 @@ export default function ListUsers(props) {
         {/* Select list */}
         <Grid item xs>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {activeUsers.map((user,index) => (
+                {onlineUsers?.map((user,index) => (
                     <React.Fragment key={index + '-' + user._id}>
                         <ListItem alignItems="flex-start">
                             <ListItemButton
                                 sx={{maxHeight: '100px', width: '100%'}}
                                 selected={selectedIndex === index}
-                                onClick={(event) => handleListItemClick(event, index)}
+                                onClick={(event) => handleListItemClick(event,index, user.userId)}
                             >
                                 <ListItemAvatar>
                                     <Avatar 
@@ -139,13 +146,14 @@ export default function ListUsers(props) {
                                     }
                                     secondary={
                                         <Typography
+                                            variant="body2"
                                             sx={{  
                                                 textOverflow: 'ellipsis', 
                                                 overflow:'hidden',  
                                                 whiteSpace: 'nowrap' 
                                             }}
                                         >
-                                             "TODO :  Last messageLast messageLast messageLast messageLast messageLast messageLast message"       
+                                            {user.message}  - {DateToHoursAndMinutes(user.timestamp)}     
                                         </Typography>
                                        
                                     }

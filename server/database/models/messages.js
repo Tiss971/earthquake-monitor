@@ -4,11 +4,11 @@ const mongoose = require("mongoose")
 const MessageSchema = new mongoose.Schema(
     {
         from: {
-            type: String,
+            type: mongoose.ObjectId,
             required: true,
         },
         to: {
-            type: String,
+            type: mongoose.ObjectId,
             required: true,
         },
         message: {

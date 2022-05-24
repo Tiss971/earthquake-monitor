@@ -15,8 +15,7 @@ const OnlineUsersSchema = new mongoose.Schema(
         },
         name: {
             type: String,
-            required: true,
-            unique: true,
+            required: true
         }
     }
 )
