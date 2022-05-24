@@ -1,16 +1,13 @@
-import Container from "@mui/material/Container"
+import Grid from "@mui/material/Grid"
+import EarthquakeNumber from '../components/charts/earthquakeNumber'
 
 export default function Stats() {
     return (
-        <Container
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-            }}
-            maxWidth="md"
-        >
-            Stats
-        </Container>
+        <Grid container>
+            <Grid item xs={12} md={6}>
+                <EarthquakeNumber />
+            </Grid>
+            
+        </Grid>
     )
 }
