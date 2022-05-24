@@ -9,6 +9,7 @@ import {useTheme} from '@mui/material/styles'
 import UserMessage from "./UserMessage"
 
 import Avatar from "@mui/material/Avatar"
+import CircularProgress from "@mui/material/CircularProgress"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Grid from "@mui/material/Grid"
@@ -41,7 +42,7 @@ function Chat(props) {
     const params = useParams()
     const theme = useTheme()
 
-    const mySelf = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const { socketService } = useContext(SocketContext);
 
     const [toUser, setToUser] = useState({})
@@ -49,19 +50,29 @@ function Chat(props) {
     toUserRef.current = toUser;
     const [chatMessage, setChatMessage] = useState([])
     const [messages, setMessages] = useState({})
+    const [loadingMessage, setLoadingMessage] = useState(false)
 
+    // Scroll to bottom on new messages
+    const messagesBottom = useRef(null)
     useEffect(() => {
-        async function fetchData() {
+        if (!loadingMessage) {
+            messagesBottom.current.scrollIntoView({ behavior: "smooth" })    
+        }
+        setLoadingMessage(false)     
+    }, [messages])
+    // Init users and listener
+    useEffect(() => {
+        async function fetchUsers() {
             //TODO: FIX WHEN CHANGING X TIMES USER ID IN URL IT SEND X TIMES THE MESSAGE 
             await userService.getUserById(params.userID).then(user => {
                 setToUser(user)
             })
         }
-        fetchData()
+        fetchUsers()
         socketService.subscribeToMessages((err, data) => {
             setMessages((prev) => ({
                 ...prev, 
-                [toUserRef.current._id] : [...prev[toUserRef.current._id], {message : data.message, timestamp : data.timestamp}]
+                [toUserRef.current._id] : [...prev[toUserRef.current._id], {from : data.from, to : data.to, message : data.message, timestamp : data.timestamp}]
             }))
         })
         //cleanup
@@ -70,17 +81,24 @@ function Chat(props) {
         }
     }, [params])
 
-    /* Init messages */
+    // Init messages
     useEffect(() => {
-        if(!messages[toUser._id] && toUser) {
-            setMessages((prev) => ({
-                ...prev,
-                [toUserRef.current._id] : []
-            }))
+        async function fetchMessage() {
+            if(!messages[toUser._id] && toUser) {
+                setLoadingMessage(true)
+                await socketService.getMessages({toId: toUser._id, skip: 0, limit: 20}, (err, data) => {
+                    setMessages((prev) => ({
+                        ...prev,
+                        [toUserRef.current._id] : data.messages.reverse()
+                    }))
+                })
+                setLoadingMessage(false)
+            }
         }
+        fetchMessage()
     }, [toUser])
 
-    /* SEND MESSAGE*/
+    // Send messages
     const submitMessage = (e) => {
         e.preventDefault()
         const message = chatMessage.trim()
@@ -90,7 +108,6 @@ function Chat(props) {
                 setChatMessage("")
             }
             else{
-                // TODO: handle error status === 'error' ; msg = message to display
                 console.log(cb)
             }
         })
@@ -99,6 +116,21 @@ function Chat(props) {
         e.preventDefault()
         setChatMessage(e.target.value)
     }
+
+    // load more old messages
+    const loadMoreMessages = () => {
+        setLoadingMessage(true)
+        const userMessages = messages[toUser._id]
+        if(!userMessages) return
+        //const lastMessage = userMessages[userMessages.length - 1]
+        socketService.getMessages({toId: toUser._id, skip: userMessages.length, limit: 10}, (err, data) => {
+            setMessages((prev) => ({
+                ...prev,
+                [toUserRef.current._id] : [...data.messages, ...prev[toUserRef.current._id]]
+            }))
+        })
+    }
+
 
     return (
         <Grid
@@ -122,16 +154,23 @@ function Chat(props) {
                 wrap="nowrap"
                 direction="column"
                 sx={{overflowY:"auto"}}
-            >
+            >   
+                {loadingMessage 
+                    ? <><CircularProgress /> Loading...</> 
+                    : <Button variant="outlined" onClick={()=>loadMoreMessages()}> Load More </Button>
+                }
+                
                 {messages[toUser?._id]?.map((item, k) => (  
                     <UserMessage
                         key={k}
-                        avatar={item.from === mySelf._id ? mySelf.image : toUser.image}
-                        side={item.from === mySelf._id ? "right" : "left"}
+                        avatar={item.from === user._id ? user.image : toUser.image}
+                        side={item.from === user._id ? "right" : "left"}
                         message={item.message}
                         timestamp={DateToHoursAndMinutes(item.timestamp)}
                     /> 
-                ))}                    
+                ))}
+                {loadingMessage && <><CircularProgress /> Loading...</>}
+                <div ref={messagesBottom} />                  
             </Grid>
             {/* Input */}
             <form onSubmit={submitMessage}>

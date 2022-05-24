@@ -43,39 +43,30 @@ module.exports = (io, socket) => {
         })
     })
 
-    /*
-
-    socket.on('userDetails',(data) => { //checks if a new user has logged in and recieves the established chat details
-        mongoClient.connect(database, (err,db) => {
-            if(err)
-                throw err;
-            else {
-                var onlineUser = { //forms JSON object for the user details
-                    "ID":socket.id,
-                    "name":data.fromUser
-                };
-                var currentCollection = db.db(dbname).collection(chatCollection);
-                var online = db.db(dbname).collection(userCollection);
-                online.insertOne(onlineUser,(err,res) =>{ //inserts the logged in user to the collection of online users
-                    if(err) throw err;
-                    console.log(onlineUser.name + " is online...");
-                });
-                currentCollection.find({ //finds the entire chat history between the two people
-                    "from" : { "$in": [data.fromUser, data.toUser] },
-                    "to" : { "$in": [data.fromUser, data.toUser] }
-                },{projection: {_id:0}}).toArray((err,res) => {
-                    if(err)
-                        throw err;
-                    else {
-                        //console.log(res);
-                        socket.emit('output',res); //emits the entire chat history to client
-                    }
-                });
+    socket.on('getMessages',(data, callback) => { 
+        //find message by userId with from and to or to and from with pagination
+        Message.find({$or:  [
+            {from: socket.request.user._id, to: data.toId}, 
+            {from: data.toId, to: socket.request.user._id}
+        ]})
+        .sort({timestamp: -1})
+        .skip(data.skip)
+        .limit(data.limit)
+        .exec((err, messages) => {
+            if (err) {
+                console.log(err)
+                callback({
+                    status: "error",
+                    msg : 'Messages can\'t be found'
+                })
             }
-            db.close();
-        });   
-    });  
-    */
+            callback({
+                status: "ok",
+                messages
+            })
+        })
+    })
+
     socket.on('disconnect', () => {
         OnlineUser.deleteOne({socketId: socket.id}, function(err, res) { 
             if (err) console.log(err)

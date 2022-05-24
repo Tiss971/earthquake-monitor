@@ -39,10 +39,18 @@ const getUsers = (cb) => {
       });
 }
 
+const getMessages = ({ toId, skip, limit }, cb) => {
+    if (!socket) return true
+    socket.emit("getMessages", {toId, skip, limit}, (messages) => {
+        return cb(null, messages)
+    })
+}
+
 export const socketService = {
     disconnectSocket,
     subscribeToMessages,
+    unsubscribeToMessages,
     sendMessage,
     getUsers,
-    unsubscribeToMessages
+    getMessages
 }
