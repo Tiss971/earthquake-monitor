@@ -1,18 +1,18 @@
+import React from "react"
 import { io } from "socket.io-client"
-let socket
 let apiURL = process.env.REACT_APP_API_ENDPOINT
 
-export const initSocket = () => {
-    socket = io(apiURL,{
+export const SocketContext = React.createContext()
+
+export const socket = io(apiURL,{
         withCredentials: true,
         transports: ['websocket'],
-    });
-}
+})
+
 export const disconnectSocket = () => {
     if (socket) socket.disconnect()
 }
 
-// Handle message receive event
 export const subscribeToMessages = (cb) => {
     if (!socket) return true
     socket.on("chat:message", (msg) => {

@@ -21,7 +21,7 @@ import Error404 from "./views/error404"
 import './css/App.css';
 
 import AuthService from "services/auth"
-import {initSocket,disconnectSocket} from "services/sioService"
+import {SocketContext, socket} from 'services/sioService';
 
 export const UserContext = createContext({
     user: null,
@@ -39,13 +39,8 @@ const App = () => {
             if (user) {
                 localStorage.setItem("token", user.token)
                 setUser(user.user);
-                initSocket(user.user)
             }
         })
-        // Cleanup when user disconnects
-        return () => {
-            disconnectSocket()
-        }
     }, [])
 
     return (
@@ -53,7 +48,7 @@ const App = () => {
             <BrowserRouter >
                 <UserContext.Provider value={value}>   
                     <Routes>
-                        <Route element={<Layout user={user} />}>
+                        <Route element={<SocketContext.Provider value={socket}><Layout user={user} /></SocketContext.Provider>}>
                             <Route path="/" element={<Latest user={user}/>} />
                             <Route path="/chat" element={user ? <Messages user={user}/> : <Navigate to="/"/>}>
                                 <Route path=":userID" element={<Chat />} /> 
@@ -61,7 +56,7 @@ const App = () => {
                             <Route path="/infos" element={<Infos user={user}/>} />
                             <Route path="/stats" element={<Stats user={user}/>} />
                             <Route path="/admin" element={user ? <Admin user={user}/> : <Navigate to="/" />} />
-                        </Route>
+                        </Route>                  
                     
                         <Route path="/login" element={user ?<Navigate to="/" />:<Login />} />
                         <Route path="/register" element={user ?<Navigate to="/" />:<Register />} />
