@@ -106,7 +106,7 @@ export default function ListUsers(props) {
         <Grid item xs>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {activeUsers.map((user,index) => (
-                    <React.Fragment key={'index' + user._id}>
+                    <React.Fragment key={index + '-' + user._id}>
                         <ListItem alignItems="flex-start">
                             <ListItemButton
                                 sx={{maxHeight: '100px', width: '100%'}}

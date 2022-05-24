@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState, useContext, useRef} from "react"
 import { UserContext } from "App"
 import { useParams } from "react-router-dom";
 import {
@@ -44,9 +44,11 @@ function Chat(props) {
     const theme = useTheme()
     const mySelf = useContext(UserContext);
 
-    const [toUser, setToUser] = useState(null)
+    const [toUser, setToUser] = useState({})
+    const toUserRef = useRef(toUser);
+    toUserRef.current = toUser;
     const [chatMessage, setChatMessage] = useState([])
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState({})
 
     useEffect(() => {
         async function fetchData() {
@@ -57,16 +59,29 @@ function Chat(props) {
         }
         fetchData()
         subscribeToMessages((err, data) => {
-            setMessages((prev) => [...prev, data])
+            setMessages((prev) => ({
+                ...prev, 
+                [toUserRef.current._id] : [...prev[toUserRef.current._id], {message : data.message, timestamp : data.timestamp}]
+            }))
         })
     }, [params])
+
+    useEffect(() => {
+        // add touser.id if not exist in object messages
+        if(!messages[toUser._id] && toUser) {
+            setMessages((prev) => ({
+                ...prev,
+                [toUserRef.current._id] : []
+            }))
+        }
+    }, [toUser])
 
     /* SEND MESSAGE*/
     const submitMessage = (e) => {
         e.preventDefault()
         const message = chatMessage.trim()
         if (message.length === 0 || !message) return
-        sendMessage({ message, toId: toUser._id }, (cb) => {
+        sendMessage({ message, toId: toUser?._id }, (cb) => {
             if (cb.status === "ok") {
                 setChatMessage("")
             }
@@ -104,7 +119,7 @@ function Chat(props) {
                 direction="column"
                 sx={{overflowY:"auto"}}
             >
-                {messages.map((item, k) => (  
+                {messages[toUser?._id]?.map((item, k) => (  
                     <UserMessage
                         key={k}
                         avatar={item.from === mySelf._id ? mySelf.image : toUser.image}
