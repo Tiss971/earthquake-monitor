@@ -46,11 +46,21 @@ const getUser = () => {
         })
 }
 
+const updateUser = (user) => {
+    return axios
+        .put(API_URL + "/user/update", {user}, { withCredentials: true })
+        .then((response) => {
+            return response
+        })
+}
+
+
 const userService = {
     getUserById,
     getAll,
     setLocation,
     setPublic,
     getUser,
+    updateUser
 }
 export default userService

@@ -298,6 +298,7 @@ const ResponsiveAppBar = (props) => {
                                 <Button
                                     fullWidth
                                     onClick={() => {
+                                        handleCloseUserMenu();
                                         navigate("/parameters")
                                     }}
                                     variant="contained"

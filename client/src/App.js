@@ -11,7 +11,7 @@ import Layout from "components/Layout"
 import Admin from "./views/admin"
 import Messages from "./views/messages"
 import Chat from "./components/chat/chat"
-import Infos from "./views/infos"
+import Parameters from "./views/parameters"
 import Latest from "./views/latest"
 import Stats from "./views/stats"
 import Login from "./views/login"
@@ -69,7 +69,7 @@ const App = () => {
                             >
                                 <Route path=":userID" element={<Chat />} />
                             </Route>
-                            <Route path="/infos" element={<Infos user={user} />} />
+                            <Route path="/parameters" element={<Parameters user={user} />} />
                             <Route path="/stats" element={<Stats user={user} />} />
                             <Route
                                 path="/admin"
@@ -81,8 +81,9 @@ const App = () => {
                                     )
                                 }
                             />
+                            <Route path="*" element={<Error404 />} />
                         </Route>
-
+                        {/* without layout */}
                         <Route
                             path="/login"
                             element={user ? <Navigate to="/" /> : <Login />}
@@ -92,7 +93,7 @@ const App = () => {
                             element={user ? <Navigate to="/" /> : <Register />}
                         />
 
-                        <Route path="*" element={<Error404 />} />
+                        
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

@@ -8,7 +8,8 @@ router.get("/privateUsers", auth.authenticate(), users.all_users)
 router.get("/publicUsers", users.all_users)
 
 router.get("/getAll", users.all_users)
-router.get("/:id", users.user_by_id)
+router.get("/:id", session.loggedIn, users.get_user_by_id)
+router.put("/update", session.loggedIn, users.update_user_by_id)
 router.get("/", session.loggedIn, users.getUserInSession)
 
 router.put("/setLocation", users.set_location)
