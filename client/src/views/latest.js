@@ -17,6 +17,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Paper from "@mui/material/Paper"
 import Select from "@mui/material/Select"
 import Skeleton from "@mui/material/Skeleton"
+import Slider from "@mui/material/Slider"
 import Typography from "@mui/material/Typography"
 
 import { Link } from "react-router-dom"
@@ -111,13 +112,15 @@ const getFormattedDateTime = (date) => {
 }
 
 export default function Latest() {
-    const user = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const [map, setMap] = useState(null)
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [summary, setSummary] = useState(null)
+    const [earthquakes, setEarthquakes] = useState([])
     const [time, setTime] = useState("day")
     const [magnitude, setMagnitude] = useState("2.5")
+    const [maxDepth, setMaxDepth] = useState(null)
     const [selectedIndex, setSelectedIndex] = useState(1)
     const [nearestUsers, setNearestUsers] = useState([])
 
@@ -142,6 +145,32 @@ export default function Latest() {
         map.flyTo([item.geometry.coordinates[1], item.geometry.coordinates[0]], 3)
     }
 
+    const handleSliderDepthChange = (event, newValue) => {
+        setMaxDepth(newValue)
+    }
+
+    const filterSummary = async () => {
+        console.log("Filter summary ", maxDepth)
+        if (maxDepth) {
+            const newSummaryFeatures = await summary.features.filter((item) => {
+                if (item.properties.gap > maxDepth) {
+                    return false
+                }
+                return true
+            })
+            setEarthquakes(newSummaryFeatures)   
+        }else{
+            setEarthquakes(summary.features)
+        }
+        setLoading(false)   
+    }
+    useEffect(() => {
+        if (summary){
+            setLoading(true)
+            filterSummary()
+        }
+    }, [summary])
+
     // Fetch latest earthquake
     useEffect(() => {
         setSelectedIndex(1)
@@ -153,6 +182,7 @@ export default function Latest() {
             setLoading(false)
         }
         fetchData()
+        
         const interval = setInterval(() => {
             fetchData()
         }, 60000)
@@ -213,6 +243,29 @@ export default function Latest() {
                             </Select>
                         </FormControl>
                     </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                        <Paper sx={{p:1, opacity: user ? 1 : 0.5}} variant={ user ? 'elevation': 'outlined'}>
+                            <Typography variant="body2" align="left" sx={{p:1}}>Maximum Depth</Typography>
+                            <Slider
+                                disabled={!user}
+                                onChange={handleSliderDepthChange}
+                                onChangeCommitted={() => {
+                                    setLoading(true)
+                                    filterSummary()
+                                }}
+                                aria-label="maxDepth"
+                                value={typeof maxDepth === "number" ? maxDepth : 10}
+                                valueLabelDisplay="auto"
+                                min={0}
+                                max={800}
+                            />
+                            {!user && 
+                            <Typography variant="body2" gutterBottom>
+                                You need to be logged to use this filter
+                            </Typography>
+                            }
+                        </Paper>
+                    </Grid>
                 </Grid>
                 {loading ? (
                     <Grid item>
@@ -220,19 +273,19 @@ export default function Latest() {
                     </Grid>
                 ) : (
                     summary &&
-                    summary.features && (
+                    earthquakes && (
                         <Fragment>
                             <Grid item>
                                 <Paper
                                     sx={{ backgroundColor: "primary.main", py: 1 }}
                                 >
-                                    {summary.metadata?.count || 0} earthquakes
+                                    {earthquakes.length || 0} earthquakes
                                 </Paper>
                             </Grid>
                             <Grid item sx={{ overflow: "auto" }}>
                                 <Paper>
                                     <List component="nav">
-                                        {summary.features?.map((item, index) => (
+                                        {earthquakes?.map((item, index) => (
                                             <ListItemButton
                                                 key={index}
                                                 selected={selectedIndex === index}
@@ -276,7 +329,7 @@ export default function Latest() {
                         </LayersControl.BaseLayer>
                     </LayersControl>
                     {summary?.features?.length &&
-                        summary.features?.map((item, index) => (
+                        earthquakes?.map((item, index) => (
                             <Marker
                                 icon={
                                     selectedIndex === index
@@ -308,7 +361,7 @@ export default function Latest() {
             </Grid>
             {/* Selected Earthquake Details*/}
             <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-                {summary && summary.features && summary.features[selectedIndex] && (
+                {summary && earthquakes && earthquakes[selectedIndex] && (
                     <Fragment>
                         <Grid
                             container
