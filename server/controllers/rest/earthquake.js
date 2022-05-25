@@ -161,8 +161,27 @@ function get_nearest_users (req, res) {
     .limit(5);
 }
 
+function get_nearest_earthquake(req,res) {
+    var latitude = req.params.latitude;
+    var longitude = req.params.longitude;
+    var maxRadius = req.params.maxRadius;
+    var url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&'
+    var query = `${url}latitude=${latitude}&longitude=${longitude}&maxradiuskm=${maxRadius}`
+
+    console.log(query)
+    axios.get(query)
+    .then(response => {
+        res.send(response.data);
+    })
+    .catch(err => {
+        res.json(err)
+    })
+}
+    
+
 exports.get_earthquakes = get_earthquakes
 exports.count_earthquakes = count_earthquakes
 exports.avg_depth_magnitude = avg_depth_magnitude
 exports.get_nearest_users = get_nearest_users
+exports.get_nearest_earthquake = get_nearest_earthquake
 

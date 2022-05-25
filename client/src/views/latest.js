@@ -134,7 +134,6 @@ export default function Latest() {
             summary?.features[selectedIndex]?.geometry.coordinates[0],
             summary?.features[selectedIndex]?.geometry.coordinates[1]
         ).then(res => {
-            console.log(res)
             setNearestUsers(res);
         });
     };
