@@ -49,6 +49,7 @@ export const options = {
 export default function EarthquakeNumber() {
     const [range, setRange] = useState('day');
     const [magnitude, setMagnitude] = useState('all');
+    const [count, setCount] = useState({day:'', week:'', month:''});
     const [loading, setLoading] = useState(true);
     const handleRange = (event) => {
         setRange(event.target.value);
@@ -64,6 +65,19 @@ export default function EarthquakeNumber() {
             const data = await earthquakeService.getEarthquakeNumber(range,magnitude);
             const labels = Object.keys(data.count);
             const values = Object.values(data.count);
+            switch (range) {
+                case 'day':
+                    setCount(prev => ({...prev, day: data.lenght}));
+                    break;
+                case 'week':
+                    setCount(prev => ({...prev, week: data.lenght}));
+                    break;
+                case 'month':
+                    setCount(prev => ({...prev, month: data.lenght}));
+                    break;
+                default:
+                    break;
+            }
             setData({
                 labels,
                 datasets: [
@@ -83,7 +97,7 @@ export default function EarthquakeNumber() {
     }, [range,magnitude]);
 
     return (
-        <Paper sx={{minHeight:'50vh'}}>
+        <Paper sx={{p:1}}>
             <Typography variant="h6" gutterBottom>
                 Number of earthquakes
             </Typography>
@@ -118,18 +132,36 @@ export default function EarthquakeNumber() {
                 <Grid container item xs={7} md={12} justifyContent='center' >
                     {!loading ? <Line options={options} data={data}/> : <CircularProgress size={'3rem'}/>}
                 </Grid>
-                <Grid container item xs direction='column'>
-                    <Grid item> 
-                        Last hour : 
+                <Grid container spacing={1} item xs>
+                    <Grid item xs={12} md={4}> 
+                        <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
+                            <Typography variant="h6" gutterBottom>
+                                {magnitude === 'all' ? 'All' : '> ' + magnitude}  Last day :
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                               {count.day}
+                            </Typography>
+                        </Paper>
                     </Grid>
-                    <Grid item> 
-                        Last day : 
+                    <Grid item xs={12} md={4}> 
+                        <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
+                            <Typography variant="h6" gutterBottom>
+                                {magnitude === 'all' ? 'All' : '> ' + magnitude} Last week :
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                               {count.week}
+                            </Typography>
+                        </Paper>
                     </Grid>
-                    <Grid item> 
-                        Last week : 
-                    </Grid>
-                    <Grid item> 
-                        Last month : 
+                    <Grid item xs={12} md={4}> 
+                        <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
+                            <Typography variant="h6" gutterBottom>
+                                {magnitude === 'all' ? 'All' : '> ' + magnitude}  Last month :
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                               {count.month}
+                            </Typography>
+                        </Paper> 
                     </Grid>
                 </Grid>
             </Grid>

@@ -148,7 +148,7 @@ export default function Latest() {
         setSelectedIndex(1)
         const fetchData = async () => {
             setLoading(true);
-            await EarthquakeService.getLatest(magnitude,time)
+            await EarthquakeService.getLatest(time,magnitude)
             .then((response) => {
                 setSummary(response)
             })
@@ -211,16 +211,16 @@ export default function Latest() {
                 ?<Grid item>
                     <CircularProgress />
                 </Grid>
-                :summary && <Fragment>
+                :summary && summary.features && <Fragment>
                     <Grid item>
                         <Paper sx={{backgroundColor:"primary.main", py:1}}>
-                            {summary.metadata.count || 0} earthquakes
+                            {summary.metadata?.count || 0} earthquakes
                         </Paper>
                     </Grid>
                     <Grid item sx={{overflow: 'auto'}}>
                         <Paper>
                             <List component="nav">
-                                {summary.features.map((item,index) => (
+                                {summary.features?.map((item,index) => (
                                     <ListItemButton
                                         key={index}
                                         selected={selectedIndex === index}
@@ -252,7 +252,7 @@ export default function Latest() {
                             />
                         </LayersControl.BaseLayer>
                     </LayersControl>
-                    {summary?.features.length  && summary.features.map((item,index) => (
+                    {summary?.features?.length  && summary.features?.map((item,index) => (
                         <Marker 
                             icon={selectedIndex === index ? selectedIcon : defaultIcon}
                             key={'marker ' + index} 
@@ -276,164 +276,166 @@ export default function Latest() {
                 open={open}
                 onClose={() => setOpen(false)}
             >
-                <Grid container direction='column' wrap="nowrap" spacing={3} sx={{
-                    p:2,
-                    justifyContent: 'space-between',
-                    alignItems: 'stretch',
-                    maxWidth:'500px'
-                }}>
-                    {/* Earthquake details*/}
-                    <Grid container item direction='column' spacing={1}>
-                        <Grid item >
-                            <Paper sx={{backgroundColor:"secondary.main",p:2}}>
-                                <Typography variant="h4" color="black">
-                                    <Icon
-                                        sx={{color:'black',mr:2}}
-                                        baseClassName="fas" 
-                                        className="fa-circle-info"
-                                    />
-                                    Details
-                                </Typography>
-                            </Paper>
-                        </Grid>
-                        <Grid item sx={{display:'flex', flexDirection:'column'}}>
-                            <Typography variant="h6">
-                            <strong>Title : </strong> 
-                            {summary?.features[selectedIndex]?.properties.title}
-                            </Typography>
-                            <Typography variant="h6">
-                            <strong>Location : </strong> 
-                            {summary?.features[selectedIndex]?.properties.place}
-                            </Typography>
-                            <Typography variant="h6">
-                                <strong>Date & Time : </strong> 
-                                { getFormattedDateTime(summary?.features[selectedIndex]?.properties.time)}
-                            </Typography>
-                            <Typography variant="h6">
-                                <strong>Latitude : </strong> 
-                                {summary?.features[selectedIndex]?.geometry.coordinates[0]}
-                            </Typography>
-                            <Typography variant="h6">
-                                <strong>Longitude : </strong> 
-                                {summary?.features[selectedIndex]?.geometry.coordinates[1]}
-                            </Typography>
-                            <Typography variant="h6">
-                                <strong>Depth : </strong> 
-                                {`${summary?.features[selectedIndex]?.geometry.coordinates[2]} km`}
-                            </Typography>
-                            <Typography variant="h6">
-                                <strong>Magnitude : </strong> 
-                                {summary?.features[selectedIndex]?.properties.mag}
-                            </Typography>
-                            <Button
-                                sx={{margin:'0 auto'}}
-                                variant="contained" 
-                                target="_blank"
-                                href={`https://earthquake.usgs.gov/earthquakes/eventpage/${summary?.features[selectedIndex]?.id}`}
-                            >
-                                View earthquake page
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    {/* Link to DYFI*/}
-                    <Grid container item direction='column' spacing={1}>
-                        <Grid item>
-                            <Paper sx={{backgroundColor:"secondary.main",p:2}}>
-                                <Typography variant="h4" color="black">
-                                    <Icon   
-                                        sx={{color:'black',mr:2}}
-                                        baseClassName="fas" 
-                                        className="fa-link"
-                                    />
-                                    Did You Feel It ?
-                                </Typography>
-                            </Paper>
-                        </Grid>
-                        <Grid item>
-                            <Button fullWidth
-                                variant="contained" 
-                                target="_blank"
-                                href={`https://earthquake.usgs.gov/earthquakes/eventpage/${summary?.features[selectedIndex]?.id}/tellus`}
-                            >
-                                Report
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    {/* Nearest Users*/}
-                    <Grid container item direction='column' spacing={1}>
-                        <Grid item>
-                            <Paper sx={{backgroundColor:"secondary.main",p:2}}>
-                                <Typography variant="h4" color="black">
-                                    <Icon   
-                                        sx={{color:'black',mr:2}}
-                                        baseClassName="fas" 
-                                        className="fa-user-group"
-                                    />
-                                    Nearest Users
-                                </Typography>
-                            </Paper>
-                        </Grid>
-                        <Grid item container sx={{overflow: 'auto'}}>
-                            {user 
-                            ? nearestUsers.length 
-                                ? nearestUsers.map((user,index) => (
-                                    <Grid item container key={'nearestUser ' + index}>
-                                        <Grid item xs={2}>
-                                            <Avatar
-                                                src={user.image}
-                                                sx={{
-                                                    width: '50px',
-                                                    height: '50px',
-                                                    display: 'block',
-                                                    overflow: 'hidden',
-                                                    border: '2px solid white',
-                                                    boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={7}>
-                                            <Typography variant="body">
-                                                {user.username}
-                                            </Typography>
-                                                <br></br>
-                                            <Typography variant="caption">
-                                                Last Connexion :
-                                                { getFormattedDateTime(user.lastVisit)}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Button variant="contained">
-                                                <Icon
-                                                    sx={{color:'black',mr:2}}
-                                                    baseClassName="fas"
-                                                    className="fa-link"
-                                                />
-                                                 <Link to={`/chat/${user._id}`}>Chat</Link>
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                )) 
-                                : <Grid item>
-                                    <Typography variant="h6">
-                                        No users found
+                {summary && summary.features && summary.features[selectedIndex] && <Fragment>
+                    <Grid container direction='column' wrap="nowrap" spacing={3} sx={{
+                        p:2,
+                        justifyContent: 'space-between',
+                        alignItems: 'stretch',
+                        maxWidth:'500px'
+                    }}>
+                        {/* Earthquake details*/}
+                        <Grid container item direction='column' spacing={1}>
+                            <Grid item >
+                                <Paper sx={{backgroundColor:"secondary.main",p:2}}>
+                                    <Typography variant="h4" color="black">
+                                        <Icon
+                                            sx={{color:'black',mr:2}}
+                                            baseClassName="fas" 
+                                            className="fa-circle-info"
+                                        />
+                                        Details
                                     </Typography>
-                                </Grid>
-                            :
-                            <Grid item xs={12}>
-                                
-                                <Typography variant="h6">
-                                    Reserved to log users
-                                </Typography>
-                                <Typography variant="h3">
-                                    <Skeleton animation="wave" />
-                                    <Skeleton animation="wave" />
-                                </Typography>
-                                
+                                </Paper>
                             </Grid>
-                            }
+                            <Grid item sx={{display:'flex', flexDirection:'column'}}>
+                                <Typography variant="h6">
+                                <strong>Title : </strong> 
+                                {summary?.features[selectedIndex]?.properties.title}
+                                </Typography>
+                                <Typography variant="h6">
+                                <strong>Location : </strong> 
+                                {summary?.features[selectedIndex]?.properties.place}
+                                </Typography>
+                                <Typography variant="h6">
+                                    <strong>Date & Time : </strong> 
+                                    { getFormattedDateTime(summary?.features[selectedIndex]?.properties.time)}
+                                </Typography>
+                                <Typography variant="h6">
+                                    <strong>Latitude : </strong> 
+                                    {summary?.features[selectedIndex]?.geometry.coordinates[0]}
+                                </Typography>
+                                <Typography variant="h6">
+                                    <strong>Longitude : </strong> 
+                                    {summary?.features[selectedIndex]?.geometry.coordinates[1]}
+                                </Typography>
+                                <Typography variant="h6">
+                                    <strong>Depth : </strong> 
+                                    {`${summary?.features[selectedIndex]?.geometry.coordinates[2]} km`}
+                                </Typography>
+                                <Typography variant="h6">
+                                    <strong>Magnitude : </strong> 
+                                    {summary?.features[selectedIndex]?.properties.mag}
+                                </Typography>
+                                <Button
+                                    sx={{margin:'0 auto'}}
+                                    variant="contained" 
+                                    target="_blank"
+                                    href={`https://earthquake.usgs.gov/earthquakes/eventpage/${summary?.features[selectedIndex]?.id}`}
+                                >
+                                    View earthquake page
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        {/* Link to DYFI*/}
+                        <Grid container item direction='column' spacing={1}>
+                            <Grid item>
+                                <Paper sx={{backgroundColor:"secondary.main",p:2}}>
+                                    <Typography variant="h4" color="black">
+                                        <Icon   
+                                            sx={{color:'black',mr:2}}
+                                            baseClassName="fas" 
+                                            className="fa-link"
+                                        />
+                                        Did You Feel It ?
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item>
+                                <Button fullWidth
+                                    variant="contained" 
+                                    target="_blank"
+                                    href={`https://earthquake.usgs.gov/earthquakes/eventpage/${summary?.features[selectedIndex]?.id}/tellus`}
+                                >
+                                    Report
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        {/* Nearest Users*/}
+                        <Grid container item direction='column' spacing={1}>
+                            <Grid item>
+                                <Paper sx={{backgroundColor:"secondary.main",p:2}}>
+                                    <Typography variant="h4" color="black">
+                                        <Icon   
+                                            sx={{color:'black',mr:2}}
+                                            baseClassName="fas" 
+                                            className="fa-user-group"
+                                        />
+                                        Nearest Users
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item container sx={{overflow: 'auto'}}>
+                                {user 
+                                ? nearestUsers.length 
+                                    ? nearestUsers.map((user,index) => (
+                                        <Grid item container key={'nearestUser ' + index}>
+                                            <Grid item xs={2}>
+                                                <Avatar
+                                                    src={user.image}
+                                                    sx={{
+                                                        width: '50px',
+                                                        height: '50px',
+                                                        display: 'block',
+                                                        overflow: 'hidden',
+                                                        border: '2px solid white',
+                                                        boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Typography variant="body">
+                                                    {user.username}
+                                                </Typography>
+                                                    <br></br>
+                                                <Typography variant="caption">
+                                                    Last Connexion :
+                                                    { getFormattedDateTime(user.lastVisit)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Button variant="contained">
+                                                    <Icon
+                                                        sx={{color:'black',mr:2}}
+                                                        baseClassName="fas"
+                                                        className="fa-link"
+                                                    />
+                                                    <Link to={`/chat/${user._id}`}>Chat</Link>
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    )) 
+                                    : <Grid item>
+                                        <Typography variant="h6">
+                                            No users found
+                                        </Typography>
+                                    </Grid>
+                                :
+                                <Grid item xs={12}>
+                                    
+                                    <Typography variant="h6">
+                                        Reserved to log users
+                                    </Typography>
+                                    <Typography variant="h3">
+                                        <Skeleton animation="wave" />
+                                        <Skeleton animation="wave" />
+                                    </Typography>
+                                    
+                                </Grid>
+                                }
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Fragment>}
             </Drawer>
            
         </Grid>

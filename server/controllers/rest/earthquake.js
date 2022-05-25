@@ -6,7 +6,7 @@ function get_earthquakes (req, res) {
     var magnitude = req.params.magnitude;
 
     const url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
-    const query = `${url}${time}_${magnitude}.geojson`
+    const query = `${url}${magnitude}_${time}.geojson`
     axios.get(query)
     .then(response => {
         res.send(response.data);
@@ -51,12 +51,94 @@ function count_earthquakes (req, res) {
                 count[key] = 1;
             }
         }
-        res.send({ok: true, count});
+        const lenght = data.length;
+        res.send({ok: true, count, lenght});
     })
     .catch(err => {
         res.json(err)
     })
 }
+function avg_depth_magnitude (req,res) {
+    const range = req.params.range;
+    const url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/'
+    const query = `${url}all_${range}.geojson`
+    console.log(query)
+    axios.get(query)
+    .then(response => {
+        var data = response.data.features;
+        var depth = data.map(item => item.properties.gap);
+        var magnitude = data.map(item => item.properties.mag);
+        var avgDepth = depth.reduce((a, b) => a + b, 0) / depth.length;
+        var avgMagnitude = magnitude.reduce((a, b) => a + b, 0) / magnitude.length;
+
+        const distribDepth = {
+            "0 - 3 km": 0,
+            "3 - 10 km": 0,
+            "10 - 20 km": 0,
+            "20 - 50 km": 0,
+            "50 - 100 km": 0,
+            "100 - 200 km": 0,
+            "200 - 500 km": 0,
+            "> 500 km": 0
+        };
+        depth.forEach(item => {
+            if (item < 3) {
+                distribDepth["0 - 3 km"]++;
+            }
+            else if (item < 10) {
+                distribDepth["3 - 10 km"]++;
+            }
+            else if (item < 20) {
+                distribDepth["10 - 20 km"]++;
+            }
+            else if (item < 50) {
+                distribDepth["20 - 50 km"]++;
+            }
+            else if (item < 100) {
+                distribDepth["50 - 100 km"]++;
+            }
+            else if (item < 200) {
+                distribDepth["100 - 200 km"]++;
+            }
+            else if (item < 500) {
+                distribDepth["200 - 500 km"]++;
+            }
+            else {
+                distribDepth["> 500 km"]++;
+            }
+        });
+        const distribMagnitude = {
+            "0 - 1": 0,
+            "1 - 2.5": 0,
+            "2.5 - 4.5": 0,
+            "4.5 - 8": 0,
+            "> 8": 0
+        };
+        magnitude.forEach(item => {
+            if (item < 1) {
+                distribMagnitude["0 - 1"]++;
+            }
+            else if (item < 2.5) {
+                distribMagnitude["1 - 2.5"]++;
+            }
+            else if (item < 4.5) {
+                distribMagnitude["2.5 - 4.5"]++;
+            }
+            else if (item < 8) {
+                distribMagnitude["4.5 - 8"]++;
+            }
+            else {
+                distribMagnitude["> 8"]++;
+            }
+        });
+        const length = data.length;
+        res.send({ok: true, avgDepth, avgMagnitude, distribDepth, distribMagnitude, length});
+    })
+    .catch(err => {
+        res.json(err)
+    })
+}
+
 function get_nearest_users (req, res) {
     var latitude = req.params.latitude;
     var longitude = req.params.longitude;
@@ -81,5 +163,6 @@ function get_nearest_users (req, res) {
 
 exports.get_earthquakes = get_earthquakes
 exports.count_earthquakes = count_earthquakes
+exports.avg_depth_magnitude = avg_depth_magnitude
 exports.get_nearest_users = get_nearest_users
 

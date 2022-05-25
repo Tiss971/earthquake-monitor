@@ -24,11 +24,19 @@ const getEarthquakeNumber = (range,magnitude) => {
         })
 }
 
+const getDepthMagnitude = (range) => {
+    return axios.get(`${API_URL}/earthquake/depthMagnitude/${range}`)
+        .then((response) => {
+            return response.data
+        })
+}
+
 
 
 const earthquakeService = {
-  getLatest,
-  getNearestUsers,
-  getEarthquakeNumber
+    getLatest,
+    getNearestUsers,
+    getEarthquakeNumber,
+    getDepthMagnitude
 }
 export default earthquakeService
