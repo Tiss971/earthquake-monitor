@@ -1,231 +1,870 @@
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "REST API for earthquake monitor",
-    "description": "This is a simple REST API application made with Express and documented with Swagger",
-    "contact": {
-      "email": "bostonmathis@gmail.com"
-    },
-    "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://localhost:5000/"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Auth",
-      "description": "Auth operations"
-    },
-    {
-      "name": "Users",
-      "description": "Operations about user"
-    }
-  ],
-  "paths": {
-    "/auth/register": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Create user",
-        "operationId": "createUser",
-        "requestBody": {
-          "description": "Created user object",
-          "content": {
-            "*/*": {}
-          },
-          "required": true
+    "openapi": "3.0.1",
+    "info": {
+        "title": "REST API for earthquake monitor",
+        "description": "This is a simple REST API application made with Express and documented with Swagger",
+        "contact": {
+            "email": "bostonmathis@gmail.com"
         },
-        "responses": {
-          "default": {
-            "description": "successful operation",
-            "content": {}
-          }
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
         },
-        "x-codegen-request-body-name": "body"
-      }
+        "version": "1.0.0"
     },
-    "/auth/login": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Logs user into the system",
-        "operationId": "loginUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "description": "The user name for login",
-            "required": true,
-            "schema": {
-              "type": "string"
+    "servers": [
+        {
+            "url": "https://earthquake-monitor-server.herokuapp.com/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth operations"
+        },
+        {
+            "name": "Users",
+            "description": "Operations about user"
+        },
+        {
+            "name": "Earthquakes",
+            "description": "Operations about earthquakes"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Create user",
+                "operationId": "createUser",
+                "requestBody": {
+                    "description": "Created user object",
+                    "content": {
+                        "*/*": {}
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "The user name for login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The email of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The password for login in clear text",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": "successful operation",
+                        "content": {}
+                    }
+                },
+                "x-codegen-request-body-name": "body"
             }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "The password for login in clear text",
-            "required": true,
-            "schema": {
-              "type": "string"
+        },
+        "/auth/login": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Logs user into the system",
+                "operationId": "loginUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "The user name for login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The password for login in clear text",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "headers": {
+                            "X-Rate-Limit": {
+                                "description": "calls per hour allowed by the user",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Expires-After": {
+                                "description": "date in UTC when token expires",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/xml": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid username/password supplied",
+                        "content": {}
+                    }
+                }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "headers": {
-              "X-Rate-Limit": {
-                "description": "calls per hour allowed by the user",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
+        },
+        "/user/logout": {
+            "get": {
+                "tags": ["Auth"],
+                "summary": "Logs out current logged in user session",
+                "description": "This can only be done by the logged in user",
+                "operationId": "logoutUser",
+                "responses": {
+                    "default": {
+                        "description": "successful operation",
+                        "content": {}
+                    }
                 }
-              },
-              "X-Expires-After": {
-                "description": "date in UTC when token expires",
-                "schema": {
-                  "type": "string",
-                  "format": "date-time"
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get user by user id",
+                "operationId": "getUserByName",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
                 }
-              }
             },
-            "content": {
-              "application/xml": {
-                "schema": {
-                  "type": "string"
+            "put": {
+                "tags": ["Users"],
+                "summary": "Updated user",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "name that need to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid user supplied",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
+                },
+                "x-codegen-request-body-name": "body"
+            },
+            "delete": {
+                "tags": ["Users"],
+                "summary": "Delete user",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "The name that needs to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid username supplied",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
                 }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
             }
-          },
-          "400": {
-            "description": "Invalid username/password supplied",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/user/logout": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Logs out current logged in user session",
-        "description": "This can only be done by the logged in user",
-        "operationId": "logoutUser",
-        "responses": {
-          "default": {
-            "description": "successful operation",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/user/{username}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get user by user name",
-        "operationId": "getUserByName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be fetched. Use user1 for testing. ",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {}
-          },
-          "400": {
-            "description": "Invalid username supplied",
-            "content": {}
-          },
-          "404": {
-            "description": "User not found",
-            "content": {}
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Updated user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "name that need to be updated",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid user supplied",
-            "content": {}
-          },
-          "404": {
-            "description": "User not found",
-            "content": {}
-          }
         },
-        "x-codegen-request-body-name": "body"
-      },
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "/user": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get user in session",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getUserInSession",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "session",
+                        "description": "Get user in session",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                          "text/plain": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "location": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "coordinates": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "number",
+                                                    "format": "double"
+                                                },
+                                                "description": "longitude, latitude",
+                                                "example": [
+                                                    -0.1337,
+                                                    51.5152
+                                                ],
+                                                "x-codegen-array-max-length": 2,
+                                                "minItems": 2,
+                                                "maxItems": 2
+                                            }
+                                        }
+                                    },
+                                    "_id": {
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                      "type": "string"
+                                    },
+                                    "password": {
+                                      "type": "string"
+                                    },
+                                    "lastVisit": {
+                                      "type": "date"
+                                    },
+                                    "third_party_auth": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "provider_name": {
+                                                    "type": "string"
+                                                },
+                                                "provider_id": {
+                                                    "type": "string"
+                                                },
+                                                "provider_data": {
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "address" : {
+                                        "type" : "string"
+                                    },
+                                    "public" :{
+                                        "type" : "boolean"
+                                    }
+                                },
+                                "example" : {"location":{"type":"Point","coordinates":[-151.00415781499996,64.80808789800005]},"_id":"628d9d189df99f41ce8c55bf","username":"AlaskaPublic","email":"AlaskaPublic@gmail.com","password":"$2a$10$fTdTUKSmcFAbzr3AmeHnOuQPDcoXXwV0s2IGZDKHUFYwobBboPpzC","third_party_auth":[],"lastVisit":"2022-05-25T03:06:08.855Z","__v":0,"address":"Alaska","public":true}
+                            }
+                        }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
+                }
             }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid username supplied",
-            "content": {}
-          },
-          "404": {
-            "description": "User not found",
-            "content": {}
-          }
+        },
+        "/user/getAll": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get all users",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getAllUsers",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "session",
+                        "description": "Get all user in session",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "user/setLocation": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Set user location",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "setUserLocation",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "body",
+                        "description": "Set user address",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "body",
+                        "description": "Set user coordinate",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "minItems": 2,
+                            "maxItems": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "user/setPublic": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Set user public",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "setUserPublic",
+                "parameters": [
+                    {
+                        "name": "public",
+                        "in": "body",
+                        "description": "Set user public",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "earthquake/latest/:time/:magnitude": {
+            "get": {
+                "tags": ["Earthquakes"],
+                "summary": "Get latest earthquakes",
+                "operationId": "getLatestEarthquakes",
+                "parameters": [
+                    {
+                        "name": "time",
+                        "in": "path",
+                        "description": "The time that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["hour", "day", "week", "month"]
+                        }
+                    },
+                    {
+                        "name": "magnitude",
+                        "in": "path",
+                        "description": "The magnitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["all", "significant", "4.5", "2.5", "1.0"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Earthquake not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "earthquake/number/:range/:magnitude": {
+            "get": {
+                "tags": ["Earthquakes"],
+                "summary": "Get number of earthquakes",
+                "operationId": "getNumberEarthquakes",
+                "parameters": [
+                    {
+                        "name": "range",
+                        "in": "path",
+                        "description": "The range that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["hour", "day", "week", "month"]
+                        }
+                    },
+                    {
+                        "name": "magnitude",
+                        "in": "path",
+                        "description": "The magnitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["all", "significant", "4.5", "2.5", "1.0"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "count": {
+                                            "type": "object",
+                                            "example": {
+                                                "ok": true,
+                                                "count": {
+                                                    "15 h": 11,
+                                                    "16 h": 14,
+                                                    "17 h": 9,
+                                                    "18 h": 14,
+                                                    "19 h": 8,
+                                                    "20 h": 10,
+                                                    "21 h": 11,
+                                                    "22 h": 16,
+                                                    "23 h": 12,
+                                                    "00 h": 15,
+                                                    "01 h": 11,
+                                                    "02 h": 5,
+                                                    "03 h": 5,
+                                                    "04 h": 6,
+                                                    "05 h": 3,
+                                                    "06 h": 8,
+                                                    "07 h": 11,
+                                                    "08 h": 12,
+                                                    "09 h": 13,
+                                                    "10 h": 9,
+                                                    "11 h": 17,
+                                                    "12 h": 10,
+                                                    "13 h": 13,
+                                                    "14 h": 15
+                                                },
+                                                "lenght": 258
+                                            }
+                                        },
+                                        "length": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Earthquake not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "earthquake/depthMagnitude/:range": {
+            "get": {
+                "tags": ["Earthquakes"],
+                "summary": "Get depth magnitude",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getDepthMagnitude",
+                "parameters": [
+                    {
+                        "name": "range",
+                        "in": "path",
+                        "description": "The range that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["day", "week", "month"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "avgDepth": {
+                                            "type": "number"
+                                        },
+                                        "avgMagnitude": {
+                                            "type": "number"
+                                        },
+                                        "distribDepth": {
+                                            "type": "object",
+                                            "properties": {
+                                                "0 - 3 km": {
+                                                    "type": "number"
+                                                },
+                                                "3 - 10 km": {
+                                                    "type": "number"
+                                                },
+                                                "10 - 20 km": {
+                                                    "type": "number"
+                                                },
+                                                "20 - 50 km": {
+                                                    "type": "number"
+                                                },
+                                                "50 - 100 km": {
+                                                    "type": "number"
+                                                },
+                                                "100 - 200 km": {
+                                                    "type": "number"
+                                                },
+                                                "200 - 500 km": {
+                                                    "type": "number"
+                                                },
+                                                "> 500  km": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        "distribMagnitude": {
+                                            "type": "object",
+                                            "properties": {
+                                                "0 - 1": {
+                                                    "type": "number"
+                                                },
+                                                "1 - 2.5": {
+                                                    "type": "number"
+                                                },
+                                                "2.5 - 4.5": {
+                                                    "type": "number"
+                                                },
+                                                "4.5 - 8": {
+                                                    "type": "number"
+                                                },
+                                                "> 8": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "example" : {"ok":true,"avgDepth":107.62234052470588,"avgMagnitude":1.357215686196079,"distribDepth":{"0 - 3 km":49,"3 - 10 km":0,"10 - 20 km":0,"20 - 50 km":10,"50 - 100 km":61,"100 - 200 km":109,"200 - 500 km":26,"> 500 km":0},"distribMagnitude":{"0 - 1":90,"1 - 2.5":139,"2.5 - 4.5":19,"4.5 - 8":7,"> 8":0},"length":255}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Earthquake not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "earthquake/nearestUsers/:latitude/:longitude" : {
+            "get": {
+                "tags": ["Earthquakes"],
+                "summary": "Get nearest users",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getNearestUsers",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "path",
+                        "description": "The latitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "path",
+                        "description": "The longitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "array",
+                                    "items" : {
+                                        "type": "object",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "lastVisit": {
+                                                "type": "date"
+                                            },
+                                            "location": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "coordinates": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "number",
+                                                            "format": "double"
+                                                        },
+                                                        "description": "longitude, latitude",
+                                                        "example": [
+                                                            -0.1337,
+                                                            51.5152
+                                                        ],
+                                                        "x-codegen-array-max-length": 2,
+                                                        "minItems": 2,
+                                                        "maxItems": 2
+                                                    }
+                                                }
+                                            },
+                                            "username": {
+                                                "type": "string"
+                                            }
+                                        }
+
+                                    }
+                                },
+                                "example" : [{"location":{"type":"Point","coordinates":[-75.49989999999997,43.000350000000026]},"_id":"627c2e9d18b22608212be2d6","username":"test","lastVisit":"2022-05-24T17:26:13.029Z"},{"location":{"type":"Point","coordinates":[-0.8811399999999594,41.651830000000075]},"_id":"6283f2864c6b41cf51630bda","username":"Mathis Boston","image":"https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=797877694521989&height=50&width=50&ext=1655406472&hash=AeSSAuOE08MUyoIrxbw","lastVisit":"2022-05-24T17:22:24.844Z"},{"location":{"type":"Point","coordinates":[2.3414000000000215,48.85717000000005]},"_id":"6283f3b3b4ba4cc6497d31f3","username":"Mathis Boston","image":"https://lh3.googleusercontent.com/a/AATXAJzSZOwTmI1HT2EzV--1-vkY0Oy8yJpIpWvAOj6ObrY=s96-c","lastVisit":"2022-05-25T03:00:35.126Z"},{"location":{"type":"Point","coordinates":[-151.00415781499996,64.80808789800005]},"_id":"628d9d189df99f41ce8c55bf","username":"AlaskaPublic","lastVisit":"2022-05-25T03:06:08.855Z"}]
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Earthquake not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "earthquake/nearestEarthquake/:latitude/:longitude/:maxRadius" : {
+            "get": {
+                "tags": ["Earthquakes"],
+                "summary": "Get nearest earthquake",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getNearestEarthquake",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "path",
+                        "description": "The latitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "path",
+                        "description": "The longitude that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "maxRadius",
+                        "in": "path",
+                        "description": "The maxRadius that needs to be fetched.",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "bbox": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "double"
+                                            },
+                                            "description": "longitude, latitude",
+                                            "example": [-151.0255, 64.7048, 0.1, -150.5813, 64.889, 14.3],
+                                            "minItems": 3
+                                        },
+                                        "features": {
+                                            "type": "object",
+                                            "description": "List of all earthquake with GeoJSON informations"
+                                        },
+                                        "metadata": {
+                                            "type": "object",
+                                            "description": "Earthquake informations"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {"type":"FeatureCollection","metadata":{"generated":1653486799000,"url":"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=64.80808789800005&longitude=-151.00415781499996&maxradiuskm=28","title":"USGS Earthquakes","status":200,"api":"1.13.6","count":4},"features":[{"type":"Feature","properties":{"mag":0.7,"place":"12 km S of Manley Hot Springs, Alaska","time":1653438180761,"updated":1653438642098,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0226nt294s","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226nt294s&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":8,"net":"ak","code":"0226nt294s","ids":",ak0226nt294s,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.87,"gap":null,"magType":"ml","type":"earthquake","title":"M 0.7 - 12 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.5813,64.889,0.1]},"id":"ak0226nt294s"},{"type":"Feature","properties":{"mag":2.1,"place":"33 km S of Manley Hot Springs, Alaska","time":1653068440398,"updated":1653069119034,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0226ftlm7o","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226ftlm7o&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":68,"net":"ak","code":"0226ftlm7o","ids":",ak0226ftlm7o,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.99,"gap":null,"magType":"ml","type":"earthquake","title":"M 2.1 - 33 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.6794,64.7048,12.7]},"id":"ak0226ftlm7o"},{"type":"Feature","properties":{"mag":0.9,"place":"26 km S of Manley Hot Springs, Alaska","time":1652700522052,"updated":1652701466018,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak022693t23x","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak022693t23x&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":12,"net":"ak","code":"022693t23x","ids":",ak022693t23x,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.36,"gap":null,"magType":"ml","type":"earthquake","title":"M 0.9 - 26 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.7208,64.7625,14.3]},"id":"ak022693t23x"},{"type":"Feature","properties":{"mag":1.1,"place":"24 km SW of Manley Hot Springs, Alaska","time":1651383305290,"updated":1653074301382,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0225k77o9o","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0225k77o9o&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":19,"net":"ak","code":"0225k77o9o","ids":",ak0225k77o9o,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.41,"gap":null,"magType":"ml","type":"earthquake","title":"M 1.1 - 24 km SW of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-151.0255,64.8553,12.8]},"id":"ak0225k77o9o"}],"bbox":[-151.0255,64.7048,0.1,-150.5813,64.889,14.3]}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Earthquake not found",
+                        "content": {}
+                    }
+                }
+            }
         }
-      }
-    }
-  },
-  "components": {}
+    },
+    "components": {}
 }
