@@ -56,7 +56,7 @@ export default function NearestEarthquake() {
     };
 
     return (
-        <Paper sx={{p:1}}>
+        <Paper sx={{p:1, opacity: user ? 1 : 0.5}} >
             <Typography variant="h6" gutterBottom>
                 Number of earthquakes within 
                 <TextField 
@@ -68,6 +68,7 @@ export default function NearestEarthquake() {
                 km last month
             </Typography>
             <Slider
+                disabled={!user}
                 onChange={handleSliderChange}
                 onChangeCommitted={() => {setLoading(true);fetchData()}}
                 aria-label="maxRadius"
@@ -75,9 +76,14 @@ export default function NearestEarthquake() {
                 min={0}
                 max={20000}
             />
-            
-            {loading ? <CircularProgress size={'3rem'}/> :
-            <Paper sx={{backgroundColor:'primary.main'}}>
+            {!user ? <Typography variant="body2" gutterBottom>
+                You need to be logged in to see the results
+                </Typography>
+            : !user.location ? <Typography variant="body2" gutterBottom>
+                You need to set your location in your profile
+                </Typography>
+            : loading ? <CircularProgress size={'3rem'}/> 
+            : <Paper sx={{backgroundColor:'primary.main'}}>
                 <Typography variant="h6" gutterBottom>
                     Number of earthquakes
                 </Typography>
