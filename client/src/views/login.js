@@ -192,6 +192,12 @@ function Login() {
                     </AlertTitle>
                 </Alert>
             </Grow>
+            {!logged && <Button href="/" variant="contained" color="warning" sx={{p:2}}>
+                <Typography variant="h6"  align="center">
+                    Access without login
+                </Typography>
+            </Button>
+            }
         </Container>
     )
 }

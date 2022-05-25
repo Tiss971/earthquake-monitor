@@ -9,6 +9,7 @@ import AlertTitle from "@mui/material/AlertTitle"
 import Button from "@mui/material/Button"
 import Container from "@mui/material/Container"
 import Grid from "@mui/material/Grid"
+import Grow from "@mui/material/Grow"
 import Link from "@mui/material/Link"
 import Typography from "@mui/material/Typography"
 
@@ -62,6 +63,7 @@ function Register() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
+                alignItems: "center",
                 height: "100vh",
             }}
         >
@@ -243,20 +245,30 @@ function Register() {
                         </div>
                     </form>
                 </Grid>
-
-                <Grid item xs={6}>
-                    {registered ? (
-                        <Alert severity="success">
-                            <AlertTitle>
-                                {" "}
-                                <strong> Redirect to Log In Page </strong>{" "}
-                            </AlertTitle>
-                        </Alert>
-                    ) : (
-                        ""
-                    )}
-                </Grid>
             </Grid>
+            {/* Confirmation Alert */}
+            <Grow
+                in={registered}
+                style={{ transformOrigin: "0 0 0" }}
+                {...(registered ? { timeout: 1000 } : {})}
+            >
+                <Alert
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: "70%", my: 1 }}
+                >
+                    <AlertTitle>
+                        <strong> Redirection to login page </strong>
+                    </AlertTitle>
+                </Alert>
+            </Grow>
+            {!registered &&
+                <Button href="/" variant="contained" color="warning" sx={{p:2}}>
+                    <Typography variant="h6"  align="center">
+                        Access without registered
+                    </Typography> 
+                </Button>
+            }
         </Container>
     )
 }
