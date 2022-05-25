@@ -7,10 +7,6 @@ function all_users (req, res) {
   });
 };
 
-function closest_user (req, res) {
-  res.send("closest user")
-}
-
 function user_by_id (req, res) {
   User.findById(req.params.id, function (err, user) {
     if (err) return res.status(500).send("There was a problem finding the user.");
@@ -54,7 +50,6 @@ function getUserInSession (req, res) {
 
 
 exports.all_users = all_users
-exports.closest_user = closest_user
 exports.user_by_id = user_by_id
 exports.set_location = set_location
 exports.set_public = set_public

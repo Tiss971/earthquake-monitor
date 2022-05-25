@@ -15,13 +15,6 @@ const getAll = () => {
     })
 }
 
-const getClosest = (location) => {
-    return axios.get(API_URL + "/user/closest/" + location)
-        .then((response) => {
-            return response.data
-        })
-}
-
 const setLocation = (location, address) => {
     return axios.put(API_URL + "/user/setLocation", 
         { location, address },
@@ -55,7 +48,6 @@ const getUser = () => {
 const userService = {
     getUserById,
     getAll,
-    getClosest,
     setLocation,
     setPublic,
     getUser
