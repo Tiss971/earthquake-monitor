@@ -13,11 +13,14 @@ import Grow from "@mui/material/Grow"
 import Link from "@mui/material/Link"
 import Typography from "@mui/material/Typography"
 
+import ReCaptchaV2 from 'react-google-recaptcha'
+
 import AuthService from "services/auth"
 
 function Register() {
     const [DBerror, setDBerror] = useState("")
     const [registered, setRegistered] = useState(false)
+    const [token, setToken] = useState("")
 
     const {
         register,
@@ -31,11 +34,19 @@ function Register() {
         Register(data)
     }
 
+    const handleExpire = () => {
+        setToken(null)
+    }
+    const handleToken = (token) => {
+        setToken(token)
+    }
+
     let navigate = useNavigate()
     const Register = async (data) => {
         setDBerror("")
+        if (!token ) return setDBerror("Please verify you are not a robot")
         if (data.Password === data.ConfirmPassword) {
-            AuthService.register(data.username, data.Email, data.Password)
+            AuthService.register(data.username, data.Email, data.Password, token)
                 .then((res) => {
                     if (res.data.ok) {
                         console.log("Registered")
@@ -240,6 +251,13 @@ function Register() {
                                     <Link href="/login" variant="caption">
                                         {"Already have an account? Sign In"}
                                     </Link>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <ReCaptchaV2
+                                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                                        onChange={handleToken}
+                                        onExpired={handleExpire}
+                                    />
                                 </Grid>
                             </Grid>
                         </div>

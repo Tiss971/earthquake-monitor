@@ -1,5 +1,6 @@
 const express = require("express")
 const router = express.Router()
+const axios = require("axios")
 
 const User = require("../database/models/user")
 var auth = require("../middleware/auth")()
@@ -7,9 +8,23 @@ const passport = require("../passport")
 
 const bcrypt = require("bcryptjs")
 jwt = require("jwt-simple")
+function recaptcha_token_verify(req,res,next){
+    const token = req.body.token
+    const secret = process.env.RECAPTCHA_SECRET_KEY
 
+    axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`)
+    .then(response => {
+        console.log(response.data)
+        if(response.data.success){
+            next()
+        }else{
+            res.status(401).send("Recaptcha Failed")
+        }
+    })
+}
 /* Local Register */
-router.post("/register", (req, res) => {
+router.post("/register",recaptcha_token_verify,(req, res) => {
+    
     const { username, email, password } = req.body
     // CHECK IF USERNAME EXIST
     User.findOne({ username: username }, (err, user) => {
