@@ -24,7 +24,6 @@ export default function UserGestion() {
     const [confirmPasswordDialog, setConfirmPasswordDialog] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [success, setSuccess] = useState(false)
     const [successMessage, setSuccessMessage] = useState(false)
@@ -38,7 +37,7 @@ export default function UserGestion() {
         setNewUser({...newUser, username: event.target.value})
     }
     const handleUsernameEnter = (event) => {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             setNewUser({...newUser, username: event.target.value})
         }
     }
@@ -47,7 +46,7 @@ export default function UserGestion() {
         setNewUser({...newUser, email: event.target.value})
     }
     const handleEmailEnter = (event) => {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             setNewUser({...newUser, email: event.target.value})
         }
     }
@@ -78,7 +77,7 @@ export default function UserGestion() {
         setNewUser({...newUser, password: event.target.value})
     }
     const handlePasswordEnter = (event) => {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             setNewUser({...newUser, password: event.target.value})
         }
     }
@@ -94,7 +93,7 @@ export default function UserGestion() {
         setConfirmPassword(event.target.value)
     }
     const handleConfirmPasswordEnter = (event) => {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             setConfirmPassword(event.target.value)
         }
     }

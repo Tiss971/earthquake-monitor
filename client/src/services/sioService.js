@@ -1,4 +1,3 @@
-import React from "react"
 import { io } from "socket.io-client"
 let apiURL = process.env.REACT_APP_API_ENDPOINT
 

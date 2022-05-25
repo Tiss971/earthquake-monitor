@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react"
 
 import CircularProgress from "@mui/material/CircularProgress"
-import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 import Paper from "@mui/material/Paper"
 import TextField from "@mui/material/TextField"
@@ -13,12 +12,8 @@ export default function NearestEarthquake() {
     const { user } = useContext(UserContext)
     const [maxRadius, setMaxRadius] = useState(10)
     const [count, setCount] = useState(0)
-    const [earthquakes, setEarthquakes] = useState()
 
     const [loading, setLoading] = useState(true)
-    const handleMaxRadius = (event, newValue) => {
-        setMaxRadius(newValue)
-    }
 
     const fetchData = async () => {
         if (!user) return
@@ -45,7 +40,7 @@ export default function NearestEarthquake() {
     }
 
     const handleInputEnter = (event) => {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             setLoading(true)
             fetchData()
         }
