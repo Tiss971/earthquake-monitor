@@ -1,9 +1,9 @@
-import {  useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles"
 import Button from "@mui/material/Button"
 import AuthService from "../services/auth"
 
 export default function Menu() {
-    const theme = useTheme();
+    const theme = useTheme()
     function handlePrivate(e) {
         e.preventDefault()
         AuthService.privateTest().then((response) => {
@@ -28,18 +28,18 @@ export default function Menu() {
     function handleVerifyJWT(e) {
         e.preventDefault()
         AuthService.verifyJWT()
-        .then((response) => {
-            console.log(response)
-        })
-        .catch((err) => {
-            if (err.response.data === 'Unauthorized') {
-                //TODO: show error
-                console.log('Redirection to logout')
-            } else {
-                console.log(err.response)
-            }
-        }
-    )}
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((err) => {
+                if (err.response.data === "Unauthorized") {
+                    //TODO: show error
+                    console.log("Redirection to logout")
+                } else {
+                    console.log(err.response)
+                }
+            })
+    }
 
     function currentUser(e) {
         e.preventDefault()
@@ -49,20 +49,29 @@ export default function Menu() {
     }
     function Swagger(e) {
         e.preventDefault()
-        window.open(
-            process.env.REACT_APP_API_ENDPOINT + "/docs",
-            "_blank"
-        )
+        window.open(process.env.REACT_APP_API_ENDPOINT + "/docs", "_blank")
     }
 
     return (
         <div>
-            <Button variant="contained" onClick={handlePrivate}>Private</Button>
-            <Button variant="contained" onClick={handlePublic}>Public</Button>
-            <Button variant="contained" onClick={handlePrivateWithAuth}>Private with Auth</Button>
-            <Button variant="contained" onClick={handleVerifyJWT}>Check Token</Button>
-            <Button variant="contained" onClick={currentUser}>Current User</Button>
-            <Button variant="contained" onClick={Swagger}>API Docs</Button>
+            <Button variant="contained" onClick={handlePrivate}>
+                Private
+            </Button>
+            <Button variant="contained" onClick={handlePublic}>
+                Public
+            </Button>
+            <Button variant="contained" onClick={handlePrivateWithAuth}>
+                Private with Auth
+            </Button>
+            <Button variant="contained" onClick={handleVerifyJWT}>
+                Check Token
+            </Button>
+            <Button variant="contained" onClick={currentUser}>
+                Current User
+            </Button>
+            <Button variant="contained" onClick={Swagger}>
+                API Docs
+            </Button>
 
             {theme.mode}
         </div>

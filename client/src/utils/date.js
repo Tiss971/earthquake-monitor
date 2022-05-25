@@ -1,4 +1,4 @@
-export function getFormattedDateTime (date){
+export function getFormattedDateTime(date) {
     const dateObj = new Date(date)
     return dateObj.toLocaleString("en-US", {
         weekday: "short",
@@ -8,8 +8,8 @@ export function getFormattedDateTime (date){
         hour: "numeric",
         minute: "numeric",
         second: "numeric",
-        hour12: false
-        })    
+        hour12: false,
+    })
 }
 
 export function DateToHoursAndMinutes(datestring) {

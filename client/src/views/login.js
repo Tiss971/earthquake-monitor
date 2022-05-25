@@ -5,10 +5,10 @@ import Alert from "@mui/material/Alert"
 import AlertTitle from "@mui/material/AlertTitle"
 import Button from "@mui/material/Button"
 import Container from "@mui/material/Container"
-import Divider from '@mui/material/Divider'
+import Divider from "@mui/material/Divider"
 import Grid from "@mui/material/Grid"
-import Grow from '@mui/material/Grow'
-import {Google, Facebook} from "@mui/icons-material"
+import Grow from "@mui/material/Grow"
+import { Google, Facebook } from "@mui/icons-material"
 import Link from "@mui/material/Link"
 import Typography from "@mui/material/Typography"
 
@@ -30,13 +30,13 @@ function Login() {
 
     /* GOOGLE LOGIN */
     const google = () => {
-        window.open("http://localhost:5000/auth/google", "_self");
+        window.open("http://localhost:5000/auth/google", "_self")
     }
     /* FACEBOOK LOGIN */
     const facebook = () => {
-        window.open("http://localhost:5000/auth/facebook", "_self");
+        window.open("http://localhost:5000/auth/facebook", "_self")
     }
-   
+
     /* Username and Password Login */
     const Login = (data) => {
         setDBerror("")
@@ -45,7 +45,7 @@ function Login() {
                 if (res.data.ok) {
                     setLogged(true)
                     setTimeout(() => {
-                        window.open("/", "_self");
+                        window.open("/", "_self")
                     }, 2000)
                 } else {
                     setDBerror(res.data.message)
@@ -59,41 +59,35 @@ function Login() {
     return (
         <Container
             maxWidth="xs"
-            sx={{ 
-                display: "flex", 
+            sx={{
+                display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",  
+                alignItems: "center",
                 height: "100vh",
             }}
-        >   
+        >
             {/* Form */}
-            <form
-                className="customForm"
-                onSubmit={handleSubmit(Login)}
-            >
+            <form className="customForm" onSubmit={handleSubmit(Login)}>
                 <div className="form-inner">
                     <Grid item xs={12}>
-                        {/* Register Log In */}                        
+                        {/* Register Log In */}
                         <Container
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-around",
                                 alignItems: "center",
-                                mb:1
+                                mb: 1,
                             }}
                         >
                             <h2>Log in</h2>
                             <img
                                 height="100"
-                                src={
-                                    process.env.PUBLIC_URL +
-                                    "/images/logo.png"
-                                }
+                                src={process.env.PUBLIC_URL + "/images/logo.png"}
                                 alt=""
                             ></img>
                         </Container>
-                        {/* Username Or Email */}   
+                        {/* Username Or Email */}
                         <div className="form-group">
                             <label htmlFor="username">Username or email:</label>
                             <input
@@ -154,35 +148,45 @@ function Login() {
                             </Grid>
                         </Grid>
                         {/* Google Login */}
-                        <Divider sx={{my:2}}> Or log with </Divider>
-                        <Grid container item sx={{justifyContent:'space-around'}}>
-                            <Button 
+                        <Divider sx={{ my: 2 }}> Or log with </Divider>
+                        <Grid container item sx={{ justifyContent: "space-around" }}>
+                            <Button
                                 variant="contained"
-                                sx={{backgroundColor:'#DE5246',  '&:hover': {backgroundColor:'red'}}}
+                                sx={{
+                                    backgroundColor: "#DE5246",
+                                    "&:hover": { backgroundColor: "red" },
+                                }}
                                 onClick={google}
-                                startIcon={<Google/>}
+                                startIcon={<Google />}
                             >
                                 Google
                             </Button>
-                            <Button 
+                            <Button
                                 variant="contained"
-                                sx={{backgroundColor:'#3b5998', '&:hover': {backgroundColor:'blue'}}}
+                                sx={{
+                                    backgroundColor: "#3b5998",
+                                    "&:hover": { backgroundColor: "blue" },
+                                }}
                                 onClick={facebook}
-                                startIcon={<Facebook/>}
+                                startIcon={<Facebook />}
                             >
                                 Facebook
                             </Button>
                         </Grid>
-                    </Grid> 
+                    </Grid>
                 </div>
             </form>
             {/* Confirmation Alert */}
             <Grow
                 in={logged}
-                style={{ transformOrigin: '0 0 0' }}
+                style={{ transformOrigin: "0 0 0" }}
                 {...(logged ? { timeout: 1000 } : {})}
             >
-                <Alert severity="success" variant="filled" sx={{width:'50%',my:1}}>
+                <Alert
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: "50%", my: 1 }}
+                >
                     <AlertTitle>
                         <strong> Welcome </strong>{" "}
                     </AlertTitle>

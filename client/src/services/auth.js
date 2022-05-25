@@ -12,10 +12,14 @@ const register = (username, email, password) => {
 }
 const login = (username, password) => {
     return axios
-        .post(API_URL + "/auth/login",{
-            username,
-            password,
-        },{ withCredentials: true })
+        .post(
+            API_URL + "/auth/login",
+            {
+                username,
+                password,
+            },
+            { withCredentials: true }
+        )
         .then((response) => {
             if (response.data.ok) {
                 localStorage.setItem("token", response.data.token)
@@ -23,15 +27,16 @@ const login = (username, password) => {
             return response
         })
 }
-const isAuthenticated =  () => {
-    return axios.get(API_URL + "/auth/success", { withCredentials: true })
-    .then((res) => {
-        if (res.status === 200) return res.data
-        throw new Error("authentication has been failed!");
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+const isAuthenticated = () => {
+    return axios
+        .get(API_URL + "/auth/success", { withCredentials: true })
+        .then((res) => {
+            if (res.status === 200) return res.data
+            throw new Error("authentication has been failed!")
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 }
 const currentUser = () => {
     return axios.get(API_URL + "/auth/getUser")
@@ -45,13 +50,13 @@ const logout = () => {
         })
 }
 const privateTest = () => {
-    return axios.get(API_URL + "/user/privateUsers") 
+    return axios.get(API_URL + "/user/privateUsers")
 }
 const privateTestWithAuth = () => {
     return axios.get(API_URL + "/user/privateUsers", { headers: authHeader() })
 }
 const publicTest = () => {
-    return axios.get(API_URL + "/user/publicUsers") 
+    return axios.get(API_URL + "/user/publicUsers")
 }
 /* Locally verify token with token from local storage */
 const verifyJWT = () => {

@@ -14,10 +14,7 @@ export default function Error() {
                 <CardMedia
                     component="img"
                     height="373"
-                    image={
-                        process.env.PUBLIC_URL +
-                        "/images/logo.png"
-                    }
+                    image={process.env.PUBLIC_URL + "/images/logo.png"}
                 />
                 <CardContent>
                     <Typography variant="h4" color="text.secondary">

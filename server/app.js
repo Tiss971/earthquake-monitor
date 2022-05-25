@@ -19,12 +19,12 @@ const earthquakeRouter = require("./routes/earthquake")
 
 /* API DOCS */
 const swaggerUi = require("swagger-ui-express")
-const swaggerDocument = require('./docs/swagger.json');
+const swaggerDocument = require("./docs/swagger.json")
 app.use(
     "/docs",
     swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, { explorer: true})
-);
+    swaggerUi.setup(swaggerDocument, { explorer: true })
+)
 
 /* EXPRESS CONFIG */
 // Use modules and folders
@@ -37,35 +37,39 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 const cors = require("cors")
-app.use(cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-}))
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        methods: "GET,POST,PUT,DELETE",
+        credentials: true,
+    })
+)
 
 /* SESSIONS */
-const client = mongoose.connect(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true }).then(
-    () => {
-        console.log("=== Connecting to Mongo ===")
-        clientPromise = new Promise(function (resolve, reject) {
-            resolve(mongoose.connection.getClient())
-            reject(new Error("MongoClient Error"))
-        })
-        return clientPromise
-    },
-    (err) => {
-        console.log("error connecting to Mongo: ")
-        console.log(err)
-    }
-)
-const sessionMiddleware =  session({
+const client = mongoose
+    .connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(
+        () => {
+            console.log("=== Connecting to Mongo ===")
+            clientPromise = new Promise(function (resolve, reject) {
+                resolve(mongoose.connection.getClient())
+                reject(new Error("MongoClient Error"))
+            })
+            return clientPromise
+        },
+        (err) => {
+            console.log("error connecting to Mongo: ")
+            console.log(err)
+        }
+    )
+const sessionMiddleware = session({
     secret: "cpywbzgBn7CR94gRViRo",
     store: MongoStore.create({ client }),
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        secure: false
-    }
+    cookie: {
+        secure: false,
+    },
 })
 app.use(sessionMiddleware)
 app.use(passport.initialize()) // initialize passport
@@ -84,44 +88,49 @@ const server = http.createServer(app)
 const io = new Server(server)
 
 // convert a connect middleware to a Socket.IO middleware
-const wrap = middleware => (socket, next) =>  middleware(socket.request, {}, next);
-io.use(wrap(sessionMiddleware));
-io.use(wrap(passport.initialize()));
-io.use(wrap(passport.session()));
+const wrap = (middleware) => (socket, next) => middleware(socket.request, {}, next)
+io.use(wrap(sessionMiddleware))
+io.use(wrap(passport.initialize()))
+io.use(wrap(passport.session()))
 
 io.use((socket, next) => {
     if (socket.request.user) {
-        next();
+        next()
     } else {
-        next(new Error('unauthorized'))
+        next(new Error("unauthorized"))
     }
-});
+})
 
 const OnlineUser = require("./database/models/onlineUsers")
 // Websocket handling imports
 const registerChatHandlers = require("./controllers/ws/chatHandler")
-io.on('connect', (socket) => {
-    console.log('New User Logged In with ID '+socket.id);
+io.on("connect", (socket) => {
+    console.log("New User Logged In with ID " + socket.id)
     // Set user online
     console.log(socket.request.user.username, socket.id)
     OnlineUser.findOneAndUpdate(
-        {userId: socket.request.user._id}, 
-        {$set: {userId: socket.request.user._id, socketId: socket.id, name: socket.request.user.username}}, 
-        {new: true, upsert: true}, (err, doc) => {
+        { userId: socket.request.user._id },
+        {
+            $set: {
+                userId: socket.request.user._id,
+                socketId: socket.id,
+                name: socket.request.user.username,
+            },
+        },
+        { new: true, upsert: true },
+        (err, doc) => {
             if (err) {
                 console.log(err)
-            }
-            else console.log(doc.name + " is now online")
+            } else console.log(doc.name + " is now online")
         }
     )
 
-
-    const session = socket.request.session;
+    const session = socket.request.session
     //console.log(`saving sid ${socket.id} in session ${session.id}`);
-    session.socketId = socket.id;
-    session.save();
+    session.socketId = socket.id
+    session.save()
 
     registerChatHandlers(io, socket)
-});
+})
 
 module.exports = { io, app, server }

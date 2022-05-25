@@ -1,9 +1,9 @@
 function loggedIn(req, res, next) {
     if (req.user) {
-        next();
+        next()
     } else {
-        res.status(401);
+        res.status(401)
     }
 }
 
-exports.loggedIn = loggedIn;
+exports.loggedIn = loggedIn

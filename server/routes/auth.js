@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const User = require("../database/models/user")
-var auth = require("../middleware/auth")();
+var auth = require("../middleware/auth")()
 const passport = require("../passport")
 
 const bcrypt = require("bcryptjs")
@@ -61,32 +61,32 @@ router.post("/register", (req, res) => {
     })
 })
 /* local login */
-router.post('/login', function(req, res, next) {
-    passport.authenticate('local',function(err,user,message){
-        if(err){
+router.post("/login", function (req, res, next) {
+    passport.authenticate("local", function (err, user, message) {
+        if (err) {
             return next(err)
         }
-        if(!user){
+        if (!user) {
             return res.status(401).json({
-                ok:false,
-                message:message
+                ok: false,
+                message: message,
             })
         }
-        req.logIn(user,function(err){
-            if(err){
+        req.logIn(user, function (err) {
+            if (err) {
                 return next(err)
             }
             var payload = {
-                id:req.user.id,
-                expire:Date.now()+1000*60*60*24*7,//7 days
+                id: req.user.id,
+                expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
             }
             res.json({
-                ok:true,
-                user:req.user,
-                token:jwt.encode(payload,process.env.TOKEN_SECRET),
+                ok: true,
+                user: req.user,
+                token: jwt.encode(payload, process.env.TOKEN_SECRET),
             })
         })
-    })(req,res,next)
+    })(req, res, next)
 })
 
 /* Verify token */
@@ -98,41 +98,46 @@ router.get("/verifyJWT", auth.authenticate(), (req, res, next) => {
 })
 
 /* Google OAuth 2.0*/
-router.get('/google/failure', (req, res) => {
+router.get("/google/failure", (req, res) => {
     res.status(401).json({
         ok: false,
         message: "Google login failed",
     })
 })
-router.get('/google', 
-    passport.authenticate('google', { scope: ['profile', "email"] })
-);
-router.get('/google/callback',
-    passport.authenticate('google', { 
-        successRedirect: 'http://localhost:3000',
-        failureRedirect: '/auth/google/failure'
+router.get(
+    "/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+)
+router.get(
+    "/google/callback",
+    passport.authenticate("google", {
+        successRedirect: "http://localhost:3000",
+        failureRedirect: "/auth/google/failure",
     })
-);
+)
 
 /* Facebook */
-router.get('/facebook/failure', (req, res) => {
+router.get("/facebook/failure", (req, res) => {
     res.status(401).json({
         ok: false,
         message: "Facebook login failed",
     })
 })
-router.get('/facebook', 
-    passport.authenticate('facebook')
-);
-router.get('/facebook/callback',
-    passport.authenticate('facebook', {scope:'email', failureRedirect: '/login', failureMessage: true  }),
+router.get("/facebook", passport.authenticate("facebook"))
+router.get(
+    "/facebook/callback",
+    passport.authenticate("facebook", {
+        scope: "email",
+        failureRedirect: "/login",
+        failureMessage: true,
+    }),
     (req, res) => {
-        res.redirect('http://localhost:3000')
+        res.redirect("http://localhost:3000")
     }
-);
+)
 
 /* Get user info */
-router.get('/success', (req, res) => {
+router.get("/success", (req, res) => {
     if (req.user) {
         var payload = {
             id: req.user.id,
@@ -143,8 +148,7 @@ router.get('/success', (req, res) => {
             user: req.user,
             token: jwt.encode(payload, process.env.TOKEN_SECRET),
         })
-    }
-    else {
+    } else {
         res.status(401).json({
             ok: false,
             message: "Google login failed",
@@ -155,16 +159,15 @@ router.get('/success', (req, res) => {
 /* Logout */
 router.get("/logout", (req, res) => {
     req.logout()
-    res.status(200).clearCookie('connect.sid', {
-        path: '/'
-    });
+    res.status(200).clearCookie("connect.sid", {
+        path: "/",
+    })
     req.session.destroy(function (err) {
-        res.send({ 
+        res.send({
             ok: true,
-            message: "Logging out" 
+            message: "Logging out",
         })
-    });
-   
+    })
 })
 
 module.exports = router

@@ -55,6 +55,8 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-.geocoder-control-input, .geocoder-control-suggestions, .geocoder-control-suggestion  {
-    color: black
+.geocoder-control-input,
+.geocoder-control-suggestions,
+.geocoder-control-suggestion {
+    color: black;
 }

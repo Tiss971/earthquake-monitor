@@ -62,15 +62,12 @@ function Register() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                height: "100vh"
+                height: "100vh",
             }}
         >
             <Grid container justifyContent="center">
                 <Grid item xs={12}>
-                    <form
-                        className="customForm"
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
+                    <form className="customForm" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-inner">
                             <Container
                                 sx={{
@@ -82,10 +79,7 @@ function Register() {
                                 <Typography variant="h2">Register</Typography>
                                 <img
                                     height="100"
-                                    src={
-                                        process.env.PUBLIC_URL +
-                                        "/images/logo.png"
-                                    }
+                                    src={process.env.PUBLIC_URL + "/images/logo.png"}
                                     alt=""
                                 ></img>
                             </Container>
@@ -124,8 +118,7 @@ function Register() {
                                         })}
                                     />
                                     <Typography variant="caption" color="error">
-                                        {errors.username &&
-                                            errors.username.message}
+                                        {errors.username && errors.username.message}
                                     </Typography>
                                 </div>
                                 <div className="form-group">
@@ -180,8 +173,7 @@ function Register() {
                                         })}
                                     />
                                     <Typography variant="caption" color="error">
-                                        {errors.Password &&
-                                            errors.Password.message}
+                                        {errors.Password && errors.Password.message}
                                     </Typography>
                                 </div>
                                 <div className="form-group">
@@ -193,15 +185,12 @@ function Register() {
                                         name="confirmpassword"
                                         autoComplete="new-password"
                                         aria-invalid={
-                                            errors.ConfirmPassword
-                                                ? "true"
-                                                : "false"
+                                            errors.ConfirmPassword ? "true" : "false"
                                         }
                                         {...register("ConfirmPassword", {
                                             required: {
                                                 value: true,
-                                                message:
-                                                    "Please confirm password !",
+                                                message: "Please confirm password !",
                                             },
                                             minLength: {
                                                 value: 8,
@@ -209,11 +198,8 @@ function Register() {
                                                     "Password must be 8 characters or more",
                                             },
                                             validate: {
-                                                matchesPreviousPassword: (
-                                                    value
-                                                ) => {
-                                                    const { Password } =
-                                                        getValues()
+                                                matchesPreviousPassword: (value) => {
+                                                    const { Password } = getValues()
                                                     return (
                                                         Password === value ||
                                                         "Passwords should match!"

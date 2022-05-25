@@ -268,75 +268,89 @@
                     "200": {
                         "description": "successful operation",
                         "content": {
-                          "text/plain": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "location": {
-                                        "type": "object",
-                                        "properties": {
-                                            "type": {
-                                                "type": "string"
-                                            },
-                                            "coordinates": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "number",
-                                                    "format": "double"
-                                                },
-                                                "description": "longitude, latitude",
-                                                "example": [
-                                                    -0.1337,
-                                                    51.5152
-                                                ],
-                                                "x-codegen-array-max-length": 2,
-                                                "minItems": 2,
-                                                "maxItems": 2
-                                            }
-                                        }
-                                    },
-                                    "_id": {
-                                        "type": "string"
-                                    },
-                                    "username": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                      "type": "string"
-                                    },
-                                    "password": {
-                                      "type": "string"
-                                    },
-                                    "lastVisit": {
-                                      "type": "date"
-                                    },
-                                    "third_party_auth": {
-                                        "type": "array",
-                                        "items": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "location": {
                                             "type": "object",
                                             "properties": {
-                                                "provider_name": {
+                                                "type": {
                                                     "type": "string"
                                                 },
-                                                "provider_id": {
-                                                    "type": "string"
-                                                },
-                                                "provider_data": {
-                                                    "type": "object"
+                                                "coordinates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "number",
+                                                        "format": "double"
+                                                    },
+                                                    "description": "longitude, latitude",
+                                                    "example": [-0.1337, 51.5152],
+                                                    "x-codegen-array-max-length": 2,
+                                                    "minItems": 2,
+                                                    "maxItems": 2
                                                 }
                                             }
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "username": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "password": {
+                                            "type": "string"
+                                        },
+                                        "lastVisit": {
+                                            "type": "date"
+                                        },
+                                        "third_party_auth": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "provider_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "provider_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "provider_data": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "public": {
+                                            "type": "boolean"
                                         }
                                     },
-                                    "address" : {
-                                        "type" : "string"
-                                    },
-                                    "public" :{
-                                        "type" : "boolean"
+                                    "example": {
+                                        "location": {
+                                            "type": "Point",
+                                            "coordinates": [
+                                                -151.00415781499996,
+                                                64.80808789800005
+                                            ]
+                                        },
+                                        "_id": "628d9d189df99f41ce8c55bf",
+                                        "username": "AlaskaPublic",
+                                        "email": "AlaskaPublic@gmail.com",
+                                        "password": "$2a$10$fTdTUKSmcFAbzr3AmeHnOuQPDcoXXwV0s2IGZDKHUFYwobBboPpzC",
+                                        "third_party_auth": [],
+                                        "lastVisit": "2022-05-25T03:06:08.855Z",
+                                        "__v": 0,
+                                        "address": "Alaska",
+                                        "public": true
                                     }
-                                },
-                                "example" : {"location":{"type":"Point","coordinates":[-151.00415781499996,64.80808789800005]},"_id":"628d9d189df99f41ce8c55bf","username":"AlaskaPublic","email":"AlaskaPublic@gmail.com","password":"$2a$10$fTdTUKSmcFAbzr3AmeHnOuQPDcoXXwV0s2IGZDKHUFYwobBboPpzC","third_party_auth":[],"lastVisit":"2022-05-25T03:06:08.855Z","__v":0,"address":"Alaska","public":true}
+                                }
                             }
-                        }
                         }
                     },
                     "500": {
@@ -681,7 +695,29 @@
                                             }
                                         }
                                     },
-                                    "example" : {"ok":true,"avgDepth":107.62234052470588,"avgMagnitude":1.357215686196079,"distribDepth":{"0 - 3 km":49,"3 - 10 km":0,"10 - 20 km":0,"20 - 50 km":10,"50 - 100 km":61,"100 - 200 km":109,"200 - 500 km":26,"> 500 km":0},"distribMagnitude":{"0 - 1":90,"1 - 2.5":139,"2.5 - 4.5":19,"4.5 - 8":7,"> 8":0},"length":255}
+                                    "example": {
+                                        "ok": true,
+                                        "avgDepth": 107.62234052470588,
+                                        "avgMagnitude": 1.357215686196079,
+                                        "distribDepth": {
+                                            "0 - 3 km": 49,
+                                            "3 - 10 km": 0,
+                                            "10 - 20 km": 0,
+                                            "20 - 50 km": 10,
+                                            "50 - 100 km": 61,
+                                            "100 - 200 km": 109,
+                                            "200 - 500 km": 26,
+                                            "> 500 km": 0
+                                        },
+                                        "distribMagnitude": {
+                                            "0 - 1": 90,
+                                            "1 - 2.5": 139,
+                                            "2.5 - 4.5": 19,
+                                            "4.5 - 8": 7,
+                                            "> 8": 0
+                                        },
+                                        "length": 255
+                                    }
                                 }
                             }
                         }
@@ -697,7 +733,7 @@
                 }
             }
         },
-        "earthquake/nearestUsers/:latitude/:longitude" : {
+        "earthquake/nearestUsers/:latitude/:longitude": {
             "get": {
                 "tags": ["Earthquakes"],
                 "summary": "Get nearest users",
@@ -730,7 +766,7 @@
                             "text/plain": {
                                 "schema": {
                                     "type": "array",
-                                    "items" : {
+                                    "items": {
                                         "type": "object",
                                         "properties": {
                                             "_id": {
@@ -753,8 +789,7 @@
                                                         },
                                                         "description": "longitude, latitude",
                                                         "example": [
-                                                            -0.1337,
-                                                            51.5152
+                                                            -0.1337, 51.5152
                                                         ],
                                                         "x-codegen-array-max-length": 2,
                                                         "minItems": 2,
@@ -766,10 +801,59 @@
                                                 "type": "string"
                                             }
                                         }
-
                                     }
                                 },
-                                "example" : [{"location":{"type":"Point","coordinates":[-75.49989999999997,43.000350000000026]},"_id":"627c2e9d18b22608212be2d6","username":"test","lastVisit":"2022-05-24T17:26:13.029Z"},{"location":{"type":"Point","coordinates":[-0.8811399999999594,41.651830000000075]},"_id":"6283f2864c6b41cf51630bda","username":"Mathis Boston","image":"https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=797877694521989&height=50&width=50&ext=1655406472&hash=AeSSAuOE08MUyoIrxbw","lastVisit":"2022-05-24T17:22:24.844Z"},{"location":{"type":"Point","coordinates":[2.3414000000000215,48.85717000000005]},"_id":"6283f3b3b4ba4cc6497d31f3","username":"Mathis Boston","image":"https://lh3.googleusercontent.com/a/AATXAJzSZOwTmI1HT2EzV--1-vkY0Oy8yJpIpWvAOj6ObrY=s96-c","lastVisit":"2022-05-25T03:00:35.126Z"},{"location":{"type":"Point","coordinates":[-151.00415781499996,64.80808789800005]},"_id":"628d9d189df99f41ce8c55bf","username":"AlaskaPublic","lastVisit":"2022-05-25T03:06:08.855Z"}]
+                                "example": [
+                                    {
+                                        "location": {
+                                            "type": "Point",
+                                            "coordinates": [
+                                                -75.49989999999997,
+                                                43.000350000000026
+                                            ]
+                                        },
+                                        "_id": "627c2e9d18b22608212be2d6",
+                                        "username": "test",
+                                        "lastVisit": "2022-05-24T17:26:13.029Z"
+                                    },
+                                    {
+                                        "location": {
+                                            "type": "Point",
+                                            "coordinates": [
+                                                -0.8811399999999594,
+                                                41.651830000000075
+                                            ]
+                                        },
+                                        "_id": "6283f2864c6b41cf51630bda",
+                                        "username": "Mathis Boston",
+                                        "image": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=797877694521989&height=50&width=50&ext=1655406472&hash=AeSSAuOE08MUyoIrxbw",
+                                        "lastVisit": "2022-05-24T17:22:24.844Z"
+                                    },
+                                    {
+                                        "location": {
+                                            "type": "Point",
+                                            "coordinates": [
+                                                2.3414000000000215, 48.85717000000005
+                                            ]
+                                        },
+                                        "_id": "6283f3b3b4ba4cc6497d31f3",
+                                        "username": "Mathis Boston",
+                                        "image": "https://lh3.googleusercontent.com/a/AATXAJzSZOwTmI1HT2EzV--1-vkY0Oy8yJpIpWvAOj6ObrY=s96-c",
+                                        "lastVisit": "2022-05-25T03:00:35.126Z"
+                                    },
+                                    {
+                                        "location": {
+                                            "type": "Point",
+                                            "coordinates": [
+                                                -151.00415781499996,
+                                                64.80808789800005
+                                            ]
+                                        },
+                                        "_id": "628d9d189df99f41ce8c55bf",
+                                        "username": "AlaskaPublic",
+                                        "lastVisit": "2022-05-25T03:06:08.855Z"
+                                    }
+                                ]
                             }
                         }
                     },
@@ -784,7 +868,7 @@
                 }
             }
         },
-        "earthquake/nearestEarthquake/:latitude/:longitude/:maxRadius" : {
+        "earthquake/nearestEarthquake/:latitude/:longitude/:maxRadius": {
             "get": {
                 "tags": ["Earthquakes"],
                 "summary": "Get nearest earthquake",
@@ -837,7 +921,10 @@
                                                 "format": "double"
                                             },
                                             "description": "longitude, latitude",
-                                            "example": [-151.0255, 64.7048, 0.1, -150.5813, 64.889, 14.3],
+                                            "example": [
+                                                -151.0255, 64.7048, 0.1, -150.5813,
+                                                64.889, 14.3
+                                            ],
                                             "minItems": 3
                                         },
                                         "features": {
@@ -852,7 +939,166 @@
                                 }
                             }
                         },
-                        "example": {"type":"FeatureCollection","metadata":{"generated":1653486799000,"url":"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=64.80808789800005&longitude=-151.00415781499996&maxradiuskm=28","title":"USGS Earthquakes","status":200,"api":"1.13.6","count":4},"features":[{"type":"Feature","properties":{"mag":0.7,"place":"12 km S of Manley Hot Springs, Alaska","time":1653438180761,"updated":1653438642098,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0226nt294s","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226nt294s&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":8,"net":"ak","code":"0226nt294s","ids":",ak0226nt294s,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.87,"gap":null,"magType":"ml","type":"earthquake","title":"M 0.7 - 12 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.5813,64.889,0.1]},"id":"ak0226nt294s"},{"type":"Feature","properties":{"mag":2.1,"place":"33 km S of Manley Hot Springs, Alaska","time":1653068440398,"updated":1653069119034,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0226ftlm7o","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226ftlm7o&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":68,"net":"ak","code":"0226ftlm7o","ids":",ak0226ftlm7o,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.99,"gap":null,"magType":"ml","type":"earthquake","title":"M 2.1 - 33 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.6794,64.7048,12.7]},"id":"ak0226ftlm7o"},{"type":"Feature","properties":{"mag":0.9,"place":"26 km S of Manley Hot Springs, Alaska","time":1652700522052,"updated":1652701466018,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak022693t23x","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak022693t23x&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"automatic","tsunami":0,"sig":12,"net":"ak","code":"022693t23x","ids":",ak022693t23x,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.36,"gap":null,"magType":"ml","type":"earthquake","title":"M 0.9 - 26 km S of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-150.7208,64.7625,14.3]},"id":"ak022693t23x"},{"type":"Feature","properties":{"mag":1.1,"place":"24 km SW of Manley Hot Springs, Alaska","time":1651383305290,"updated":1653074301382,"tz":null,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak0225k77o9o","detail":"https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0225k77o9o&format=geojson","felt":null,"cdi":null,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":19,"net":"ak","code":"0225k77o9o","ids":",ak0225k77o9o,","sources":",ak,","types":",origin,phase-data,","nst":null,"dmin":null,"rms":0.41,"gap":null,"magType":"ml","type":"earthquake","title":"M 1.1 - 24 km SW of Manley Hot Springs, Alaska"},"geometry":{"type":"Point","coordinates":[-151.0255,64.8553,12.8]},"id":"ak0225k77o9o"}],"bbox":[-151.0255,64.7048,0.1,-150.5813,64.889,14.3]}
+                        "example": {
+                            "type": "FeatureCollection",
+                            "metadata": {
+                                "generated": 1653486799000,
+                                "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=64.80808789800005&longitude=-151.00415781499996&maxradiuskm=28",
+                                "title": "USGS Earthquakes",
+                                "status": 200,
+                                "api": "1.13.6",
+                                "count": 4
+                            },
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "mag": 0.7,
+                                        "place": "12 km S of Manley Hot Springs, Alaska",
+                                        "time": 1653438180761,
+                                        "updated": 1653438642098,
+                                        "tz": null,
+                                        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ak0226nt294s",
+                                        "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226nt294s&format=geojson",
+                                        "felt": null,
+                                        "cdi": null,
+                                        "mmi": null,
+                                        "alert": null,
+                                        "status": "automatic",
+                                        "tsunami": 0,
+                                        "sig": 8,
+                                        "net": "ak",
+                                        "code": "0226nt294s",
+                                        "ids": ",ak0226nt294s,",
+                                        "sources": ",ak,",
+                                        "types": ",origin,phase-data,",
+                                        "nst": null,
+                                        "dmin": null,
+                                        "rms": 0.87,
+                                        "gap": null,
+                                        "magType": "ml",
+                                        "type": "earthquake",
+                                        "title": "M 0.7 - 12 km S of Manley Hot Springs, Alaska"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [-150.5813, 64.889, 0.1]
+                                    },
+                                    "id": "ak0226nt294s"
+                                },
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "mag": 2.1,
+                                        "place": "33 km S of Manley Hot Springs, Alaska",
+                                        "time": 1653068440398,
+                                        "updated": 1653069119034,
+                                        "tz": null,
+                                        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ak0226ftlm7o",
+                                        "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0226ftlm7o&format=geojson",
+                                        "felt": null,
+                                        "cdi": null,
+                                        "mmi": null,
+                                        "alert": null,
+                                        "status": "automatic",
+                                        "tsunami": 0,
+                                        "sig": 68,
+                                        "net": "ak",
+                                        "code": "0226ftlm7o",
+                                        "ids": ",ak0226ftlm7o,",
+                                        "sources": ",ak,",
+                                        "types": ",origin,phase-data,",
+                                        "nst": null,
+                                        "dmin": null,
+                                        "rms": 0.99,
+                                        "gap": null,
+                                        "magType": "ml",
+                                        "type": "earthquake",
+                                        "title": "M 2.1 - 33 km S of Manley Hot Springs, Alaska"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [-150.6794, 64.7048, 12.7]
+                                    },
+                                    "id": "ak0226ftlm7o"
+                                },
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "mag": 0.9,
+                                        "place": "26 km S of Manley Hot Springs, Alaska",
+                                        "time": 1652700522052,
+                                        "updated": 1652701466018,
+                                        "tz": null,
+                                        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ak022693t23x",
+                                        "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak022693t23x&format=geojson",
+                                        "felt": null,
+                                        "cdi": null,
+                                        "mmi": null,
+                                        "alert": null,
+                                        "status": "automatic",
+                                        "tsunami": 0,
+                                        "sig": 12,
+                                        "net": "ak",
+                                        "code": "022693t23x",
+                                        "ids": ",ak022693t23x,",
+                                        "sources": ",ak,",
+                                        "types": ",origin,phase-data,",
+                                        "nst": null,
+                                        "dmin": null,
+                                        "rms": 0.36,
+                                        "gap": null,
+                                        "magType": "ml",
+                                        "type": "earthquake",
+                                        "title": "M 0.9 - 26 km S of Manley Hot Springs, Alaska"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [-150.7208, 64.7625, 14.3]
+                                    },
+                                    "id": "ak022693t23x"
+                                },
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "mag": 1.1,
+                                        "place": "24 km SW of Manley Hot Springs, Alaska",
+                                        "time": 1651383305290,
+                                        "updated": 1653074301382,
+                                        "tz": null,
+                                        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/ak0225k77o9o",
+                                        "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=ak0225k77o9o&format=geojson",
+                                        "felt": null,
+                                        "cdi": null,
+                                        "mmi": null,
+                                        "alert": null,
+                                        "status": "reviewed",
+                                        "tsunami": 0,
+                                        "sig": 19,
+                                        "net": "ak",
+                                        "code": "0225k77o9o",
+                                        "ids": ",ak0225k77o9o,",
+                                        "sources": ",ak,",
+                                        "types": ",origin,phase-data,",
+                                        "nst": null,
+                                        "dmin": null,
+                                        "rms": 0.41,
+                                        "gap": null,
+                                        "magType": "ml",
+                                        "type": "earthquake",
+                                        "title": "M 1.1 - 24 km SW of Manley Hot Springs, Alaska"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [-151.0255, 64.8553, 12.8]
+                                    },
+                                    "id": "ak0225k77o9o"
+                                }
+                            ],
+                            "bbox": [
+                                -151.0255, 64.7048, 0.1, -150.5813, 64.889, 14.3
+                            ]
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
