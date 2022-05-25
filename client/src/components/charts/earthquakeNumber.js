@@ -49,7 +49,7 @@ export const options = {
 export default function EarthquakeNumber() {
     const [range, setRange] = useState('day');
     const [magnitude, setMagnitude] = useState('all');
-    const [count, setCount] = useState({day:'', week:'', month:''});
+    const [count, setCount] = useState({hour:'', day:'', week:'', month:''});
     const [loading, setLoading] = useState(true);
     const handleRange = (event) => {
         setRange(event.target.value);
@@ -66,6 +66,9 @@ export default function EarthquakeNumber() {
             const labels = Object.keys(data.count);
             const values = Object.values(data.count);
             switch (range) {
+                case 'hour':
+                    setCount(prev => ({...prev, hour: data.lenght}));
+                    break;
                 case 'day':
                     setCount(prev => ({...prev, day: data.lenght}));
                     break;
@@ -108,8 +111,9 @@ export default function EarthquakeNumber() {
                     name="row-radio-buttons-group"
                     value={range}
                     onChange={handleRange}
-                >
-                    <FormControlLabel value="day" control={<Radio />} label="Today" />
+                >   
+                    <FormControlLabel value="hour" control={<Radio />} label="Last Hour" />
+                    <FormControlLabel value="day" control={<Radio />} label="Last Day" />
                     <FormControlLabel value="week" control={<Radio />} label="7 Days" />
                     <FormControlLabel value="month" control={<Radio />} label="30 Days" />
                 </RadioGroup>
@@ -124,8 +128,10 @@ export default function EarthquakeNumber() {
                     onChange={handleMagnitude}
                 >
                     <FormControlLabel value="all" control={<Radio />} label="All" />
+                    <FormControlLabel value="1.0" control={<Radio />} label="> 1.0" />
                     <FormControlLabel value="2.5" control={<Radio />} label="> 2.5" />
                     <FormControlLabel value="4.5" control={<Radio />} label="> 4.5" />
+                    <FormControlLabel value="significant" control={<Radio />} label="Significant" />
                 </RadioGroup>
             </FormControl>
             <Grid container spacing={3}>
@@ -133,30 +139,40 @@ export default function EarthquakeNumber() {
                     {!loading ? <Line options={options} data={data}/> : <CircularProgress size={'3rem'}/>}
                 </Grid>
                 <Grid container spacing={1} item xs>
-                    <Grid item xs={12} md={4}> 
+                    <Grid item xs={12} md={3}> 
                         <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
                             <Typography variant="h6" gutterBottom>
-                                {magnitude === 'all' ? 'All' : '> ' + magnitude}  Last day :
+                                {magnitude === 'all' ? 'All' : magnitude === 'significant' ? 'Significant' : '> ' + magnitude} Last hour :
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                               {count.hour}
+                            </Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={3}> 
+                        <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
+                            <Typography variant="h6" gutterBottom>
+                                {magnitude === 'all' ? 'All' : magnitude === 'significant' ? 'Significant' : '> ' + magnitude}  Last day :
                             </Typography>
                             <Typography variant="h6" gutterBottom>
                                {count.day}
                             </Typography>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={4}> 
+                    <Grid item xs={12} md={3}> 
                         <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
                             <Typography variant="h6" gutterBottom>
-                                {magnitude === 'all' ? 'All' : '> ' + magnitude} Last week :
+                                {magnitude === 'all' ? 'All' : magnitude === 'significant' ? 'Significant' : '> ' + magnitude} Last week :
                             </Typography>
                             <Typography variant="h6" gutterBottom>
                                {count.week}
                             </Typography>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={4}> 
+                    <Grid item xs={12} md={3}> 
                         <Paper sx={{padding: '1rem', backgroundColor: 'primary.main', '&:hover': { opacity: 0.8 }}}>
                             <Typography variant="h6" gutterBottom>
-                                {magnitude === 'all' ? 'All' : '> ' + magnitude}  Last month :
+                                {magnitude === 'all' ? 'All' : magnitude === 'significant' ? 'Significant' : '> ' + magnitude}  Last month :
                             </Typography>
                             <Typography variant="h6" gutterBottom>
                                {count.month}

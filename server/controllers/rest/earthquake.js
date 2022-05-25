@@ -32,6 +32,9 @@ function count_earthquakes (req, res) {
             var current = new Date(timestamp[i]);
             let key = null;
             switch (range) {
+                case 'hour':
+                    key = current.toLocaleString(undefined, {hour: '2-digit', minute: '2-digit'});
+                    break; 
                 case 'day':  
                     key = current.toLocaleString(undefined, {hour: '2-digit'}); 
                     break;
