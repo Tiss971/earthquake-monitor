@@ -4,7 +4,7 @@ import authHeader from "./authHeader"
 const API_URL = process.env.REACT_APP_API_ENDPOINT
 
 const getUserById = (id) => {
-    return axios.get(`${API_URL}/user/${id}`, authHeader()).then((response) => {
+    return axios.get(`${API_URL}/user/${id}`, { withCredentials: true }).then((response) => {
         return response.data
     })
 }
