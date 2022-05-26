@@ -12,7 +12,7 @@ passport.serializeUser((user, done) => {
 
 // user object attaches to the request as req.user
 passport.deserializeUser((id, done) => {
-    User.findOne({ _id: id }, "username email image location", (err, user) => {
+    User.findOne({ _id: id }, "username email image location address", (err, user) => {
         if (err) {
             console.log("Error : ", err)
         } else {

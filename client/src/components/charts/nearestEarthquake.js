@@ -67,7 +67,7 @@ export default function NearestEarthquake() {
                     placeholder={maxRadius}
                     value={maxRadius}
                 />
-                km last month
+                km {user?.address && <em> of {user.address}</em>} last month
             </Typography>
             <Slider
                 disabled={!user}

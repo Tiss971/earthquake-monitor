@@ -3,7 +3,7 @@ import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 
 export default function UserMessage(props) {
-    const { avatar, message, side, timestamp } = props
+    const { avatar, username, message, side, timestamp } = props
     return (
         <Grid
             container
@@ -13,7 +13,7 @@ export default function UserMessage(props) {
             wrap="nowrap"
         >
             <Grid item>
-                <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
+                <Avatar alt={username} src={avatar || "/static/images/avatar/1.jpg"} sx={{ width: 40, height: 40 }} />
             </Grid>
             <Grid
                 item

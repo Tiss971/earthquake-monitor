@@ -178,7 +178,7 @@ export default function DepthMagnitude() {
                     </Grid>
                 ) : (
                     <>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={6} md={6}>
                             <Pie data={dataDepth} options={optionsDepth} />
                             <Accordion>
                                 <AccordionSummary
@@ -243,7 +243,7 @@ export default function DepthMagnitude() {
                                 </AccordionDetails>
                             </Accordion>
                         </Grid>
-                        <Grid container item xs={12} md={6}>
+                        <Grid container item xs={6} md={6}>
                             <Pie data={dataMagnitude} options={optionsMagnitude} />
                             <Accordion>
                                 <AccordionSummary

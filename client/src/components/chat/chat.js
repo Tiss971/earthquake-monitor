@@ -131,7 +131,7 @@ function Chat(props) {
         <Grid container wrap="nowrap" direction="column" height="100%">
             <Grid item>
                 <Toolbar sx={{ backgroundColor: theme.palette.primary.main }}>
-                    <Avatar src={toUser?.image} sx={{ mr: 2 }} />
+                    <Avatar alt={toUser?.username } src={toUser?.image || "/static/images/avatar/1.jpg"} sx={{ mr: 2 }} />
                     <Typography variant="h6" sx={{ mr: 2 }}>
                         {toUser?.username}
                     </Typography>
@@ -163,7 +163,8 @@ function Chat(props) {
                 {messages[toUser?._id]?.map((item, k) => (
                     <UserMessage
                         key={k}
-                        avatar={item.from === user._id ? user.image : toUser.image}
+                        username={item.from === user._id ? toUser.username : user.username}
+                        avatar={item.from === user._id ? toUser.image : user.image}
                         side={item.from === user._id ? "right" : "left"}
                         message={item.message}
                         timestamp={DateToHoursAndMinutes(item.timestamp)}
