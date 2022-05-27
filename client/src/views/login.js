@@ -30,11 +30,11 @@ function Login() {
 
     /* GOOGLE LOGIN */
     const google = () => {
-        window.open("http://localhost:5000/auth/google", "_self")
+        window.open(process.env.REACT_APP_API_ENDPOINT + "/auth/google", "_self")
     }
     /* FACEBOOK LOGIN */
     const facebook = () => {
-        window.open("http://localhost:5000/auth/facebook", "_self")
+        window.open(process.env.REACT_APP_API_ENDPOINT + "/auth/facebook", "_self")
     }
 
     /* Username and Password Login */

@@ -15,7 +15,7 @@ const strategy = new LocalStrategy(
                     return done(err)
                 }
                 if (!user) {
-                    return done(null, false, "User not found")
+                    return done(null, false, "Incorrect Password or User")
                 }
                 console.log("User found")
                 if (user.third_party_auth[0] === undefined) {
@@ -24,7 +24,7 @@ const strategy = new LocalStrategy(
                             return done(err)
                         }
                         if (!isMatch) {
-                            return done(null, false, "Incorrect Password")
+                            return done(null, false, "Incorrect Password or User")
                         }
                         console.log("Return user")
                         user.lastVisit = Date.now()
