@@ -68,8 +68,9 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false,
-    },
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // must be 'none' to enable cross-site delivery
+        secure: process.env.NODE_ENV === "production", // must be true if sameSite='none'
+      }
 })
 app.use(sessionMiddleware)
 app.use(passport.initialize()) // initialize passport
