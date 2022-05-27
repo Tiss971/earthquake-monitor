@@ -75,6 +75,7 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware)
 app.use(passport.initialize()) // initialize passport
 app.use(passport.session()) // calls the deserializeUser
+app.enable("trust proxy") // only if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc)
 
 /* ROUTES */
 app.use("/auth", authRouter)
