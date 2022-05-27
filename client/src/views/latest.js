@@ -243,7 +243,7 @@ export default function Latest() {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6}>
+                    <Grid item xs={12} sm={12} md={12}>
                         <Paper sx={{p:1, opacity: user ? 1 : 0.5}} variant={ user ? 'elevation': 'outlined'}>
                             <Typography variant="body2" align="left" sx={{p:1}}>Maximum Depth</Typography>
                             <Slider
@@ -536,6 +536,10 @@ export default function Latest() {
                                                             {getFormattedDateTime(
                                                                 user.lastVisit
                                                             )}
+                                                        </Typography>
+                                                        <br></br>
+                                                        <Typography variant="caption">
+                                                            Address : {user.address}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid item xs={3}>

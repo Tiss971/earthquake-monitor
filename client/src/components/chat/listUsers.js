@@ -100,6 +100,7 @@ export default function ListUsers(props) {
                         <TextField
                             {...params}
                             label="Search among all users"
+                            color="accent"
                             InputProps={{
                                 ...params.InputProps,
                                 endAdornment: (

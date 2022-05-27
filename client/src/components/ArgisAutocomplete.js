@@ -14,6 +14,7 @@ const authentication = ApiKeyManager.fromKey(process.env.REACT_APP_ARCGIS_API_KE
 
 export default function ArgisAutocomplete() {
     const [shared, setShared] = useState(false)
+    //TODO: LOAD VALUE FROM USER CONTEXT
     const [value, setValue] = useState("")
     const [inputValue, setInputValue] = useState("")
     const [options, setOptions] = useState([])
@@ -79,7 +80,7 @@ export default function ArgisAutocomplete() {
         async function fetchData() {
             UserService.getUser().then((user) => {
                 if (user?.public) setShared(user.public)
-                if (user?.adress) setValue(user.address)
+                if (user?.address) setValue(user.address)
             })
         }
         fetchData()
@@ -119,9 +120,6 @@ export default function ArgisAutocomplete() {
                                     ],
                                     response.candidates[0].address
                                 )
-                                console.log("value", value)
-                                console.log("input", inputValue)
-                                console.log(options)
                             })
                         }
                     }}

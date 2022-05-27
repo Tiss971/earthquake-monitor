@@ -168,7 +168,7 @@ function get_nearest_users(req, res) {
                 },
             },
         },
-        "_id username image location lastVisit",
+        "_id username image location lastVisit address",
         function (err, users) {
             if (err)
                 return res.status(500).send("There was a problem finding the users.")
